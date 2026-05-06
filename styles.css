@@ -272,8 +272,8 @@ html, body {
 .scene-cold-open .subtitle {
   font-size: 1.1rem;
   color: rgba(255,255,255,0.7);
-  margin-bottom: auto;
   margin-top: 1rem;
+  margin-bottom: 4vh;
 }
 
 /* Scene 2: PowerPoint life */
@@ -1014,4 +1014,79 @@ body {
 }
 .scene-closing .closing-credit {
   margin-top: 1.5rem;
+}
+
+/* === Codex audit fixes === */
+
+/* Workflow cards now stretch to equal height; arrows stay centered between */
+.scene-workflow .workflow-steps {
+  align-items: stretch;
+}
+.scene-workflow .workflow-arrow {
+  align-self: center;
+}
+
+/* Card surfaces: bump alpha so they read against the body red glow */
+.scene-harness .harness-card,
+.scene-paths .path-card,
+.scene-second-brain .brain-step,
+.scene-workflow .workflow-step {
+  background: rgba(255,255,255,0.07);
+}
+
+/* Captions: explicit line-height for projector legibility */
+.scene .caption {
+  line-height: 1.4;
+}
+
+/* Scene 4: cool the local red glow so it doesn't compound with body glow */
+.scene-vs .hero-bg {
+  background:
+    linear-gradient(120deg, rgba(30,30,40,0.95) 0%, rgba(30,30,40,0.75) 50%, rgba(200,16,46,0.18) 100%),
+    radial-gradient(circle at 75% 30%, rgba(200,16,46,0.22), transparent 55%);
+}
+
+/* Title letter-spacing on projectors: nudge from -0.5px to 0 for legibility */
+.scene .title {
+  letter-spacing: 0;
+}
+
+/* Scope the global "center scenes" rule away from scenes that need top-anchored content */
+.scene-cold-open,
+.scene-closing,
+.scene-ppt-life,
+.scene-vs,
+.scene-harness,
+.scene-workflow,
+.scene-cli-1,
+.scene-cli-2,
+.scene-iframe,
+.scene-second-brain,
+.scene-paths,
+.scene-icms-impact {
+  justify-content: flex-start;
+}
+.scene-cold-open .title {
+  margin-top: 18vh;
+}
+.scene-cold-open .subtitle {
+  margin-bottom: 0;
+}
+
+/* Iframe scene: live external sites get a fallback notice that's revealed only if the iframe load fails (best-effort: visible if iframe is empty) */
+.scene-iframe .iframe-wrap::before {
+  content: "Live page loading…";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.45);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  z-index: 0;
+}
+.scene-iframe .iframe-wrap iframe {
+  position: relative;
+  z-index: 1;
 }
