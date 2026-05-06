@@ -112,6 +112,8 @@ function buildSceneGrid() {
       state.current = i;
       state.beat = 0;
       sceneGrid.hidden = true;
+      const tw = typewriters.get(activeScene().dataset.scene);
+      if (tw) tw.reset();
       render();
     });
     grid.appendChild(tile);
