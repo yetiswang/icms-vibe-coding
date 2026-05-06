@@ -54,3 +54,64 @@ html, body {
   height: 100vh;
   position: relative;
 }
+
+.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  padding: 4vh 5vw;
+  overflow: hidden;
+}
+
+.scene.active { display: flex; }
+
+.scene .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--tue-red);
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.scene .title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+  max-width: 80%;
+}
+
+.scene .title em {
+  color: var(--tue-red);
+  font-style: normal;
+}
+
+.scene .footer-strip {
+  position: absolute;
+  bottom: 1.4vh;
+  left: 5vw;
+  right: 5vw;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+[data-beat] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+[data-beat].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}

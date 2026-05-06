@@ -7,7 +7,19 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main id="deck"></main>
+  <main id="deck">
+    <section class="scene" data-scene="0" data-beats="2" data-act="0">
+      <div class="eyebrow">Scaffolding · Scene 0</div>
+      <h2 class="title">Hello, <em>vibe coding</em>.</h2>
+      <p data-beat="1" style="font-size: 1.2rem; max-width: 60ch; line-height: 1.5;">
+        If you can read this in TU/e Red after one tap of <kbd>space</kbd>, the frame works.
+      </p>
+      <div class="footer-strip">
+        <span>ICMS · TU/e · vibe-coding</span>
+        <span class="scene-counter"></span>
+      </div>
+    </section>
+  </main>
   <div id="scene-grid" hidden></div>
   <div id="help-overlay" hidden></div>
   <script type="module" src="deck.js"></script>
