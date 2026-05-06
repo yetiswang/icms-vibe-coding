@@ -305,5 +305,56 @@ if (scene6) {
   ]);
 }
 
+const scene8 = scenes.find(s => s.dataset.scene === '8');
+if (scene8) {
+  registerTypewriter(scene8, [
+    { segments: [
+      { text: '$ ', cls: 'term-prompt' },
+      { text: 'claude', cls: 'term-user' },
+    ]},
+    { segments: [
+      { text: '> ', cls: 'term-prompt' },
+      { text: 'build me a presentation about how I use Claude Code, in my visual style', cls: 'term-user' },
+    ]},
+    { segments: [
+      { text: 'reading ', cls: 'term-out' },
+      { text: 'My Templates/', cls: 'term-key' },
+      { text: ' ... 18 files', cls: 'term-out' },
+    ]},
+    { segments: [
+      { text: 'palette: ', cls: 'term-out' },
+      { text: 'TU/e Red #C8102E', cls: 'term-key' },
+    ]},
+    { segments: [
+      { text: 'font: ', cls: 'term-out' },
+      { text: 'Avenir Next LT Pro', cls: 'term-key' },
+    ]},
+    { segments: [
+      { text: 'planning 18 scenes ... ', cls: 'term-out' },
+      { text: 'done', cls: 'term-ok' },
+    ]},
+    { segments: [
+      { text: 'writing ', cls: 'term-out' },
+      { text: 'index.html', cls: 'term-key' },
+      { text: ' ... ', cls: 'term-out' },
+      { text: 'done', cls: 'term-ok' },
+    ]},
+    { segments: [
+      { text: 'writing ', cls: 'term-out' },
+      { text: 'styles.css', cls: 'term-key' },
+      { text: ', ', cls: 'term-out' },
+      { text: 'deck.js', cls: 'term-key' },
+      { text: ' ... ', cls: 'term-out' },
+      { text: 'done', cls: 'term-ok' },
+    ]},
+    { segments: [
+      { text: 'opening browser ...', cls: 'term-out' },
+    ]},
+    { segments: [
+      { text: '✓ ready. it\'s the deck you\'re watching right now.', cls: 'term-ok' },
+    ]},
+  ]);
+}
+
 // expose for console testing
 window.deck = { state, advance, retreat, scenes, render, registerTypewriter };
