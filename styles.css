@@ -249,3 +249,88 @@ html, body {
 @keyframes blink {
   50% { opacity: 0; }
 }
+
+/* Scene 1: Cold open */
+.scene-cold-open .hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 40%, rgba(200,16,46,0.18), transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(58,24,32,0.6), transparent 70%),
+    url("assets/images/icms-molecular-devices.png") center/cover no-repeat;
+  opacity: 0.55;
+  z-index: -1;
+  filter: contrast(1.1) saturate(0.9);
+}
+
+.scene-cold-open .title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  letter-spacing: -1px;
+  margin-top: auto;
+}
+
+.scene-cold-open .subtitle {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: auto;
+  margin-top: 1rem;
+}
+
+/* Scene 2: PowerPoint life */
+.scene-ppt-life {
+  background: var(--tue-dark);
+}
+
+.scene-ppt-life .ppt-stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 600px;
+  margin: 1rem 0 2rem;
+}
+
+.scene-ppt-life .ppt-thumb {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #2a2a32, #1f1f26);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  position: relative;
+}
+
+.scene-ppt-life .ppt-thumb::before {
+  content: "";
+  position: absolute;
+  top: 12%;
+  left: 8%;
+  right: 8%;
+  height: 4px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 2px;
+}
+
+.scene-ppt-life .ppt-thumb::after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  left: 8%;
+  width: 40%;
+  height: 60%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+
+.scene-ppt-life .ppt-thumb:nth-child(2)::after { background: rgba(200,16,46,0.18); }
+.scene-ppt-life .ppt-thumb:nth-child(3)::after { left: 50%; width: 42%; }
+.scene-ppt-life .ppt-thumb:nth-child(5)::after { background: rgba(255,255,255,0.18); }
+
+.scene .caption {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 0.6rem;
+}
+
+.scene .caption.muted {
+  color: rgba(255,255,255,0.55);
+  font-style: italic;
+}
