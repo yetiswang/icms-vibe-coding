@@ -1,0 +1,24 @@
+:root {
+  --tue-red: #C8102E;
+  --tue-dark: #1E1E28;
+  --tue-light: #F5F5F8;
+  --tue-gray: #64646E;
+  --tue-deep: #3a1820;
+  --term-green: #5fd07a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--tue-dark);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
+}
+
+#deck {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
