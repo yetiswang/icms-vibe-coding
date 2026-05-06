@@ -133,6 +133,18 @@ function toggleHelp() {
 
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  // Shift+Space → skip rest of current terminal line (do not advance to next line)
+  if (e.key === ' ' && e.shiftKey) {
+    const scene = activeScene();
+    const tw = typewriters.get(scene?.dataset.scene);
+    if (tw && tw.timer) {
+      e.preventDefault();
+      tw.completeCurrentLine();
+      return;
+    }
+  }
+
   switch (e.key) {
     case ' ':
     case 'ArrowRight':
