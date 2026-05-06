@@ -1,3 +1,32 @@
+@font-face {
+  font-family: "Avenir Next LT Pro";
+  src: url("fonts/AvenirNextLTPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Avenir Next LT Pro";
+  src: url("fonts/AvenirNextLTPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Avenir Next LT Pro";
+  src: url("fonts/AvenirNextLTPro-It.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Avenir Next LT Pro";
+  src: url("fonts/AvenirNextLTPro-BoldIt.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --tue-red: #C8102E;
   --tue-dark: #1E1E28;
@@ -5,6 +34,9 @@
   --tue-gray: #64646E;
   --tue-deep: #3a1820;
   --term-green: #5fd07a;
+
+  --font-display: "Avenir Next LT Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,7 +45,7 @@ html, body {
   height: 100%;
   background: var(--tue-dark);
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-display);
   overflow: hidden;
 }
 
