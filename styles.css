@@ -2305,3 +2305,35 @@ body {
 [data-theme="light"] .scene-ppt-life .mock-window {
   border-color: rgba(30,30,40,0.12) !important;
 }
+
+/* Scene 5: setup line under the title */
+.scene-harness .harness-setup {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.78);
+  font-style: italic;
+  max-width: 80ch;
+  margin: 0 0 1.4rem;
+}
+.scene-harness .harness-setup em {
+  color: var(--tue-red);
+  font-style: normal;
+  font-weight: 700;
+}
+[data-theme="light"] .scene-harness .harness-setup {
+  color: rgba(30,30,40,0.78);
+}
+
+/* Slight tweak: harness-name now wraps "—" gracefully */
+.scene-harness .harness-name {
+  white-space: normal;
+  line-height: 1.25;
+}
+
+/* Mobile: tighten the setup line */
+@media (max-width: 880px) {
+  .scene-harness .harness-setup {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+}
