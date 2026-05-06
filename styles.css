@@ -181,3 +181,71 @@ html, body {
   font-size: 0.85rem;
   color: white;
 }
+
+.terminal {
+  background: #16161b;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.06);
+  width: 100%;
+  max-width: 70ch;
+}
+
+.terminal .titlebar {
+  background: linear-gradient(to bottom, #2a2a32, #1f1f26);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+  border-bottom: 1px solid rgba(0,0,0,0.4);
+}
+
+.terminal .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.terminal .dot.r { background: #ff5f57; }
+.terminal .dot.y { background: #febc2e; }
+.terminal .dot.g { background: #28c840; }
+
+.terminal .titlebar-text {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.5);
+  margin-right: 60px;
+  font-family: var(--font-mono);
+}
+
+.terminal .body {
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #e4e4e8;
+  min-height: 14em;
+  white-space: pre-wrap;
+}
+
+.term-line { display: block; }
+.term-prompt { color: var(--tue-red); font-weight: 600; }
+.term-user { color: white; }
+.term-out { color: rgba(255,255,255,0.7); }
+.term-ok { color: var(--term-green); }
+.term-key { color: var(--tue-red); font-weight: 600; }
+
+.term-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background: var(--tue-red);
+  vertical-align: text-bottom;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
