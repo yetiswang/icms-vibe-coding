@@ -746,3 +746,147 @@ html, body {
   outline: 2px solid var(--tue-red);
   outline-offset: 2px;
 }
+
+/* === Style C atmospheric background — applied to ALL scenes === */
+body {
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(200,16,46,0.18), transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(58,24,32,0.45), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(30,30,40,0.0), rgba(20,20,28,0.6) 70%),
+    var(--tue-dark);
+}
+.scene {
+  background: transparent;
+}
+/* Title/cold-open and closing scenes get a stronger hero-bg layered on top */
+
+/* === New components from Wave 1 rewrites === */
+
+/* Scene 2: task pills */
+.scene-ppt-life .task-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  max-width: 720px;
+  margin: 0.6rem 0 1.2rem;
+}
+.scene-ppt-life .task-pill {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(200,16,46,0.08);
+  border: 1px solid rgba(200,16,46,0.25);
+  border-radius: 100px;
+  color: rgba(255,255,255,0.85);
+}
+.scene-ppt-life .ppt-stack {
+  margin: 0.4rem 0 1.2rem;
+}
+
+/* Scene 3: stacked moment lines */
+.scene-moment {
+  align-items: flex-start;
+}
+.scene-moment .moment-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 28ch;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.scene-moment .moment-line {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+  max-width: none;
+}
+.scene-moment .moment-line.muted {
+  color: rgba(255,255,255,0.6);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+}
+.scene-moment .moment-line em {
+  color: var(--tue-red);
+  font-style: italic;
+  font-weight: 700;
+}
+
+/* Scene 5: harness detail (sub-line under each card) */
+.scene-harness .harness-detail {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.45;
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Scene 7: workflow detail (sub-line under each step) */
+.scene-workflow .workflow-detail {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.45;
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* === Scene 12 rebuild: second-brain (Capture/Link/Query) === */
+.scene-second-brain .brain-flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin: 1.4rem 0 1.2rem;
+}
+.scene-second-brain .brain-step {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1.2rem;
+}
+.scene-second-brain .brain-step-num {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--tue-red);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.scene-second-brain .brain-step-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: white;
+}
+.scene-second-brain .brain-step-desc {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.45;
+}
+.scene-second-brain .brain-credit {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  margin-top: 0.6rem;
+}
+.scene-second-brain .brain-credit .muted-inline {
+  color: rgba(255,255,255,0.45);
+  font-style: normal;
+}
+
+/* === Scene 13: third "future" card === */
+.scene-paths .path-card-future {
+  border-left-color: #5fb6ff;
+  background: linear-gradient(180deg, rgba(95,182,255,0.05), rgba(255,255,255,0.04));
+}
+.scene-paths .path-card-future .path-label {
+  color: #5fb6ff;
+}
+.scene-paths .path-card-future .path-cost {
+  color: rgba(255,255,255,0.65);
+  font-style: italic;
+  font-weight: 400;
+}
+.scene-paths .paths-split {
+  grid-template-columns: repeat(3, 1fr);
+}

@@ -24,11 +24,19 @@
       </div>
     </section>
 
-    <!-- Scene 2: PowerPoint life -->
-    <section class="scene scene-ppt-life" data-scene="2" data-beats="3" data-act="1">
+    <!-- Scene 2: PowerPoint life — knowledge-worker frustration -->
+    <section class="scene scene-ppt-life" data-scene="2" data-beats="4" data-act="1">
       <div class="eyebrow">Act 1 · Scene 2</div>
-      <h2 class="title">Friday afternoon, 2024.</h2>
-      <div class="ppt-stack" data-beat="1">
+      <h2 class="title">A typical week of a knowledge worker.</h2>
+      <div class="task-grid" data-beat="1">
+        <div class="task-pill">📊 slide deck</div>
+        <div class="task-pill">📄 project doc</div>
+        <div class="task-pill">🌐 web page</div>
+        <div class="task-pill">🖼 conference poster</div>
+        <div class="task-pill">📧 long-form email</div>
+        <div class="task-pill">📋 grant report</div>
+      </div>
+      <div class="ppt-stack" data-beat="2">
         <div class="ppt-thumb"></div>
         <div class="ppt-thumb"></div>
         <div class="ppt-thumb"></div>
@@ -36,11 +44,12 @@
         <div class="ppt-thumb"></div>
         <div class="ppt-thumb"></div>
       </div>
-      <p class="caption" data-beat="2">
-        Drag a box. Pick a colour. Realign. Repeat.
+      <p class="caption" data-beat="3">
+        Drag a box. Pick a colour. Realign the third bullet. Resize the figure.<br>
+        Reformat the table. Hunt for the right brand red. Repeat.
       </p>
-      <p class="caption muted" data-beat="3">
-        There had to be a better way.
+      <p class="caption muted" data-beat="4">
+        AI was supposed to help. Somehow most of us are still doing this by hand.
       </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -48,12 +57,19 @@
       </div>
     </section>
 
-    <!-- Scene 3: The moment -->
-    <section class="scene scene-moment" data-scene="3" data-beats="2" data-act="2">
+    <!-- Scene 3: The moment — why isn't a chatbot enough? -->
+    <section class="scene scene-moment" data-scene="3" data-beats="3" data-act="2">
       <div class="eyebrow">Act 2 · Scene 3</div>
-      <div class="moment-line">
-        <span data-beat="1">Then I realized</span>
-        <span data-beat="2"> I'd been using AI <em>wrong</em>.</span>
+      <div class="moment-stack">
+        <p class="moment-line" data-beat="1">
+          Then I realized: I wasn't using AI <em>properly</em>.
+        </p>
+        <p class="moment-line muted" data-beat="2">
+          Language models are great at text. Writing, editing, summarising, translating.
+        </p>
+        <p class="moment-line" data-beat="3">
+          So why does a chatbot still feel like it's not <em>quite</em> doing the work?
+        </p>
       </div>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -61,11 +77,11 @@
       </div>
     </section>
 
-    <!-- Scene 4: Chatbot vs CLI -->
-    <section class="scene scene-vs" data-scene="4" data-beats="6" data-act="2">
+    <!-- Scene 4: Chatbot vs CLI — answer to slide 3 -->
+    <section class="scene scene-vs" data-scene="4" data-beats="7" data-act="2">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="eyebrow">Act 2 · Scene 4</div>
-      <h2 class="title">A chat bubble vs.<br>a tool that <em>touches</em> your machine.</h2>
+      <h2 class="title">Because the chat bubble is<br>missing a <em>harness</em> that touches your machine.</h2>
       <div class="vs-split">
         <div class="vs-col" data-beat="1">
           <div class="vs-label">Chatbot</div>
@@ -74,12 +90,12 @@
           <div class="vs-line">→ stops at the message</div>
         </div>
         <div class="vs-divider" data-beat="2"></div>
-        <div class="vs-col vs-col-right">
-          <div class="vs-label">Claude Code</div>
-          <div class="vs-line" data-beat="3"><span class="vs-dot"></span>reads your files</div>
-          <div class="vs-line" data-beat="4"><span class="vs-dot"></span>runs commands</div>
-          <div class="vs-line" data-beat="5"><span class="vs-dot"></span>commits to git</div>
-          <div class="vs-line" data-beat="6"><span class="vs-dot"></span>opens the browser</div>
+        <div class="vs-col vs-col-right" data-beat="3">
+          <div class="vs-label">Claude Code (with harness)</div>
+          <div class="vs-line" data-beat="4"><span class="vs-dot"></span>reads your files</div>
+          <div class="vs-line" data-beat="5"><span class="vs-dot"></span>runs commands</div>
+          <div class="vs-line" data-beat="6"><span class="vs-dot"></span>commits to git</div>
+          <div class="vs-line" data-beat="7"><span class="vs-dot"></span>opens the browser</div>
         </div>
       </div>
       <div class="footer-strip">
@@ -88,27 +104,33 @@
       </div>
     </section>
 
-    <!-- Scene 5: Harness -->
-    <section class="scene scene-harness" data-scene="5" data-beats="3" data-act="2">
+    <!-- Scene 5: Harness — three legs explained -->
+    <section class="scene scene-harness" data-scene="5" data-beats="4" data-act="2">
       <div class="eyebrow">Act 2 · Scene 5</div>
-      <h2 class="title">Three things make it a <em>harness</em>.</h2>
+      <h2 class="title">A harness, in three legs.</h2>
       <div class="harness-grid">
         <div class="harness-card" data-beat="1">
           <div class="harness-icon">🛠</div>
           <div class="harness-name">Tools</div>
-          <div class="harness-desc">It calls utilities: search, edit, run scripts, hit APIs.</div>
+          <div class="harness-desc">Search the web. Edit a file. Run a shell command. Call an API. Open a browser.</div>
+          <div class="harness-detail">The model decides which tool to call, with what arguments.</div>
         </div>
         <div class="harness-card" data-beat="2">
           <div class="harness-icon">📁</div>
           <div class="harness-name">Files</div>
-          <div class="harness-desc">It reads and writes the actual filesystem on your machine.</div>
+          <div class="harness-desc">It reads and writes the real filesystem. Your repo, your notes, your assets.</div>
+          <div class="harness-detail">Context becomes everything you've already written. Output becomes a saved artifact.</div>
         </div>
         <div class="harness-card" data-beat="3">
           <div class="harness-icon">🔁</div>
           <div class="harness-name">Loops</div>
-          <div class="harness-desc">It runs, reads the output, decides what to do next, repeats.</div>
+          <div class="harness-desc">It runs a step, reads the output, decides what to do next, runs again.</div>
+          <div class="harness-detail">A bug pops up; it tries a fix. The build fails; it reads the log and retries.</div>
         </div>
       </div>
+      <p class="caption muted" data-beat="4" style="margin-top: 1.2rem;">
+        Tools + Files + Loops = an agent that can actually <em>finish</em> the task,<br>not just describe how you'd do it.
+      </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
         <span class="scene-counter"></span>
@@ -135,7 +157,7 @@
       </div>
     </section>
 
-    <!-- Scene 7: The workflow -->
+    <!-- Scene 7: The workflow — three moves, expanded -->
     <section class="scene scene-workflow" data-scene="7" data-beats="3" data-act="3">
       <div class="eyebrow">Act 3 · Scene 7</div>
       <h2 class="title">The workflow, in three moves.</h2>
@@ -143,19 +165,22 @@
         <div class="workflow-step" data-beat="1">
           <div class="workflow-num">01</div>
           <div class="workflow-name">Read</div>
-          <div class="workflow-desc">Point Claude at your existing assets.<br>Templates, screenshots, notes.</div>
+          <div class="workflow-desc">Point Claude at your existing assets.<br>Templates, slides, notes, screenshots.</div>
+          <div class="workflow-detail">It learns your visual style, vocabulary, and audience by reading what you've already made. No "design system" doc needed.</div>
         </div>
         <div class="workflow-arrow" data-beat="2"></div>
         <div class="workflow-step" data-beat="2">
           <div class="workflow-num">02</div>
           <div class="workflow-name">Repo</div>
-          <div class="workflow-desc">Make a GitHub repo.<br>Init, commit, push. One command.</div>
+          <div class="workflow-desc">Make a GitHub repo. Init, commit, push.<br>One command, one source of truth.</div>
+          <div class="workflow-detail">Versioned, shareable, auto-deployable to GitHub Pages. Every change is a commit you can roll back.</div>
         </div>
         <div class="workflow-arrow" data-beat="3"></div>
         <div class="workflow-step" data-beat="3">
           <div class="workflow-num">03</div>
           <div class="workflow-name">Vibe</div>
-          <div class="workflow-desc">Describe what you want.<br>Watch it appear. Ask for changes.</div>
+          <div class="workflow-desc">Describe what you want, in plain words.<br>Watch it appear. Ask for changes.</div>
+          <div class="workflow-detail">"Make the title bigger." "Use the supramolecular image." "Add a section for collaborators." It edits, refreshes, you react.</div>
         </div>
       </div>
       <div class="footer-strip">
@@ -233,32 +258,32 @@
     </section>
 
     <!-- Scene 12: Second brain teaser -->
-    <section class="scene scene-substrate" data-scene="12" data-beats="3" data-act="4">
-      <div class="eyebrow">Act 4 · Scene 12 · Substrate</div>
-      <h2 class="title">The reason this works for me:<br>my notes are <em>plain markdown</em>.</h2>
-      <div class="people-strip" data-beat="1">
-        <figure>
-          <div class="initials-tile">AK</div>
-          <figcaption>Andrej Karpathy<br><span>former Tesla AI · OpenAI</span></figcaption>
-        </figure>
-        <figure>
-          <div class="initials-tile">AM</div>
-          <figcaption>Andy Matuschak<br><span>evergreen notes</span></figcaption>
-        </figure>
-        <figure>
-          <div class="initials-tile">MA</div>
-          <figcaption>Maggie Appleton<br><span>digital gardens</span></figcaption>
-        </figure>
-        <figure>
-          <div class="initials-tile">NF</div>
-          <figcaption>Nat Friedman<br><span>former GitHub CEO</span></figcaption>
-        </figure>
+    <section class="scene scene-second-brain" data-scene="12" data-beats="5" data-act="4">
+      <div class="eyebrow">Act 4 · Scene 12 · Second brain</div>
+      <h2 class="title">An <em>Obsidian vault</em> the AI can read.</h2>
+      <div class="brain-flow">
+        <div class="brain-step" data-beat="1">
+          <div class="brain-step-num">01</div>
+          <div class="brain-step-name">Capture</div>
+          <div class="brain-step-desc">Daily notes, meeting notes, paper highlights, half-finished thoughts. Plain markdown files. Yours forever, in any text editor.</div>
+        </div>
+        <div class="brain-step" data-beat="2">
+          <div class="brain-step-num">02</div>
+          <div class="brain-step-name">Link</div>
+          <div class="brain-step-desc">Wikilinks tie ideas together. Tags, backlinks, the graph view. A wiki of your own thinking emerges over time.</div>
+        </div>
+        <div class="brain-step" data-beat="3">
+          <div class="brain-step-num">03</div>
+          <div class="brain-step-name">Query</div>
+          <div class="brain-step-desc">Claude reads the vault as context. Answers grounded in what you've already written. Your wiki, your voice, your domain.</div>
+        </div>
       </div>
-      <p class="caption" data-beat="2">
-        I keep an Obsidian vault, like theirs.
+      <p class="caption" data-beat="4">
+        AI is only as good as the <em>context</em> you give it.<br>
+        Markdown is the lingua franca. Your notes become a <em>tool</em> the AI can read.
       </p>
-      <p class="caption muted" data-beat="3">
-        I won't show its contents (personal and university privacy).<br>Happy to chat one-on-one after.
+      <p class="brain-credit" data-beat="5">
+        Inspired by Andrej Karpathy's writings on personal AI knowledge systems. <span class="muted-inline">I keep a vault myself, won't show its contents (privacy), happy to chat one-on-one.</span>
       </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -266,13 +291,13 @@
       </div>
     </section>
 
-    <!-- Scene 13: Two paths -->
-    <section class="scene scene-paths" data-scene="13" data-beats="2" data-act="4">
+    <!-- Scene 13: Three paths to get started — including a forward-looking lab vision -->
+    <section class="scene scene-paths" data-scene="13" data-beats="3" data-act="4">
       <div class="eyebrow">Act 4 · Scene 13</div>
-      <h2 class="title">Two paths to get started.</h2>
+      <h2 class="title">Where to start. Where it's heading.</h2>
       <div class="paths-split">
         <div class="path-card" data-beat="1">
-          <div class="path-label">Subscription path</div>
+          <div class="path-label">Subscription</div>
           <div class="path-name">Hosted, fastest models</div>
           <ul class="path-list">
             <li>Claude Pro / Max</li>
@@ -283,7 +308,7 @@
           <div class="path-note">No setup. Best models. Just sign up.</div>
         </div>
         <div class="path-card path-card-alt" data-beat="2">
-          <div class="path-label">Open-source path</div>
+          <div class="path-label">Open source</div>
           <div class="path-name">Private, free, your hardware</div>
           <ul class="path-list">
             <li>Ollama · LM Studio</li>
@@ -293,24 +318,17 @@
           <div class="path-cost">€0 / month</div>
           <div class="path-note">Runs on a Mac or workstation. Slower, smaller, yours.</div>
         </div>
-      </div>
-      <p class="caption muted" style="margin-top: 1rem;">
-        Both paths get you there. Pick what fits your ethics, budget, and hardware.
-      </p>
-      <div class="footer-strip">
-        <span>ICMS · TU/e · vibe-coding</span>
-        <span class="scene-counter"></span>
-      </div>
-    </section>
-
-    <!-- Scene 14: Why a vault matters -->
-    <section class="scene scene-vault-matters" data-scene="14" data-beats="3" data-act="4">
-      <div class="eyebrow">Act 4 · Scene 14</div>
-      <h2 class="title">Why a vault matters.</h2>
-      <div class="vault-lines">
-        <p class="vault-line" data-beat="1">AI is only as good as the <em>context</em> you give it.</p>
-        <p class="vault-line" data-beat="2">Markdown is the <em>lingua franca</em>.</p>
-        <p class="vault-line" data-beat="3">Your notes become a <em>tool</em> the AI can read.</p>
+        <div class="path-card path-card-future" data-beat="3">
+          <div class="path-label">What's next</div>
+          <div class="path-name">The lab as second brain</div>
+          <ul class="path-list">
+            <li>Local LLM with the lab's memory</li>
+            <li>Software harness (files, repos, docs)</li>
+            <li>Hardware harness (instruments, ELN)</li>
+          </ul>
+          <div class="path-cost">Not on the market yet</div>
+          <div class="path-note">A direction we get to build. The intelligent lab as a working assistant, not a chatbot.</div>
+        </div>
       </div>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -318,9 +336,9 @@
       </div>
     </section>
 
-    <!-- Scene 15: What this means for ICMS -->
-    <section class="scene scene-icms-impact" data-scene="15" data-beats="3" data-act="5">
-      <div class="eyebrow">Act 5 · Scene 15</div>
+    <!-- Scene 14: What this means for ICMS -->
+    <section class="scene scene-icms-impact" data-scene="14" data-beats="3" data-act="5">
+      <div class="eyebrow">Act 5 · Scene 14</div>
       <h2 class="title">What this means for ICMS.</h2>
       <ul class="impact-list">
         <li data-beat="1">
@@ -342,9 +360,9 @@
       </div>
     </section>
 
-    <!-- Scene 16: Collaboration invitation -->
-    <section class="scene scene-invite" data-scene="16" data-beats="1" data-act="5">
-      <div class="eyebrow">Act 5 · Scene 16 · Invitation</div>
+    <!-- Scene 15: Collaboration invitation -->
+    <section class="scene scene-invite" data-scene="15" data-beats="1" data-act="5">
+      <div class="eyebrow">Act 5 · Scene 15 · Invitation</div>
       <h2 class="title">
         Got a deck, a poster,<br>or a website you've been<br>putting off?
       </h2>
@@ -357,10 +375,10 @@
       </div>
     </section>
 
-    <!-- Scene 17: Closing / credit -->
-    <section class="scene scene-closing" data-scene="17" data-beats="2" data-act="5">
+    <!-- Scene 16: Closing / credit -->
+    <section class="scene scene-closing" data-scene="16" data-beats="2" data-act="5">
       <div class="hero-bg" aria-hidden="true"></div>
-      <div class="eyebrow">Act 5 · Scene 17 · Fin</div>
+      <div class="eyebrow">Act 5 · Scene 16 · Fin</div>
       <h2 class="title">This deck was built<br>with <em>Claude Code</em>.</h2>
       <p class="closing-credit" data-beat="1">
         Yuyang Wang · ICMS · TU/e
