@@ -2203,3 +2203,105 @@ body {
   #theme-toggle { width: 40px; height: 40px; }
   #theme-toggle svg { width: 18px; height: 18px; }
 }
+
+/* === Mobile fixes (round 3): theme toggle visibility + bigger, footer clearance === */
+
+/* Theme toggle: defensively pinned top-right, larger touch target on mobile */
+#theme-toggle {
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
+  right: calc(env(safe-area-inset-right, 0px) + 14px) !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 300 !important;
+  width: 52px;
+  height: 52px;
+  display: flex !important;
+}
+
+@media (max-width: 880px) {
+  #theme-toggle {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 22px;
+  }
+  #theme-toggle svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #theme-toggle {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  #theme-toggle svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
+
+/* Defensive: touch-nav stays bottom-right */
+#touch-nav {
+  position: fixed !important;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
+  right: calc(env(safe-area-inset-right, 0px) + 14px) !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 250 !important;
+}
+
+/* === Mobile: more vertical clearance so floating UI doesn't sit on the footer === */
+@media (max-width: 880px) {
+  .scene {
+    padding: 9vh 5vw 22vh;          /* was 14vh; bump to 22vh so footer-strip clears the floating ☰ ‹ › row */
+  }
+  .scene-cold-open { padding-top: 14vh; }
+  .scene-closing { padding-top: 14vh; padding-bottom: 22vh; }
+
+  .scene .footer-strip {
+    position: static !important;
+    margin-top: 2.4rem !important;
+    padding: 0.8rem 0 0 !important;
+    border-top: 1px solid var(--theme-rule);
+    /* extra safe-area bottom so footer text never sits behind the iOS toolbar */
+    margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.4rem);
+  }
+
+  /* Slide 2 chatbot window: hard-flatten into the column flow */
+  .scene-ppt-life .window-stage {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    margin: 0.4rem 0 0.6rem !important;
+  }
+  .scene-ppt-life .mock-window,
+  .scene-ppt-life .window-chatbot {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    animation: none !important;          /* stop the rotating-glow attention loop on mobile */
+    border-color: rgba(255,255,255,0.12);
+  }
+  .scene-ppt-life .window-chatbot {
+    margin-top: 0.6rem !important;
+  }
+}
+
+/* Light-mode mobile: chat-window and mock-window borders read on cream */
+[data-theme="light"] .scene-ppt-life .mock-window {
+  border-color: rgba(30,30,40,0.12) !important;
+}
