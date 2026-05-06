@@ -50,17 +50,62 @@ function retreat() {
   render();
 }
 
+const sceneGrid = document.getElementById('scene-grid');
+const helpOverlay = document.getElementById('help-overlay');
+
+function buildSceneGrid() {
+  const grid = sceneGrid.querySelector('.grid');
+  grid.innerHTML = '';
+  scenes.forEach((s, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    const title = s.querySelector('.title')?.textContent?.trim() || s.querySelector('.eyebrow')?.textContent?.trim() || `Scene ${num}`;
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    const numEl = document.createElement('div');
+    numEl.className = 'num';
+    numEl.textContent = num;
+    const titleEl = document.createElement('div');
+    titleEl.textContent = title;
+    tile.appendChild(numEl);
+    tile.appendChild(titleEl);
+    tile.addEventListener('click', () => {
+      state.current = i;
+      state.beat = 0;
+      sceneGrid.hidden = true;
+      render();
+    });
+    grid.appendChild(tile);
+  });
+}
+
+function toggleSceneGrid() {
+  if (helpOverlay.hidden === false) helpOverlay.hidden = true;
+  sceneGrid.hidden = !sceneGrid.hidden;
+  if (!sceneGrid.hidden) buildSceneGrid();
+}
+
+function toggleHelp() {
+  if (sceneGrid.hidden === false) sceneGrid.hidden = true;
+  helpOverlay.hidden = !helpOverlay.hidden;
+}
+
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   switch (e.key) {
     case ' ':
     case 'ArrowRight':
-      e.preventDefault();
-      advance();
+      if (sceneGrid.hidden && helpOverlay.hidden) { e.preventDefault(); advance(); }
       break;
     case 'ArrowLeft':
+      if (sceneGrid.hidden && helpOverlay.hidden) { e.preventDefault(); retreat(); }
+      break;
+    case 'Escape':
       e.preventDefault();
-      retreat();
+      toggleSceneGrid();
+      break;
+    case '?':
+      e.preventDefault();
+      toggleHelp();
       break;
   }
 });

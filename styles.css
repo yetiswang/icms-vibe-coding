@@ -115,3 +115,69 @@ html, body {
   opacity: 1;
   transform: translateY(0);
 }
+
+#scene-grid, #help-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,20,28,0.96);
+  z-index: 100;
+  padding: 4vh 5vw;
+  overflow-y: auto;
+}
+
+#scene-grid h3, #help-overlay h3 {
+  font-size: 0.75rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--tue-red);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+#scene-grid .grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.8rem;
+}
+
+#scene-grid .tile {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  padding: 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+#scene-grid .tile:hover {
+  background: rgba(200,16,46,0.15);
+  border-color: var(--tue-red);
+}
+
+#scene-grid .tile .num {
+  color: var(--tue-red);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+
+#help-overlay table {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+#help-overlay td {
+  padding: 0.4rem 1.5rem 0.4rem 0;
+}
+
+#help-overlay kbd {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: white;
+}
