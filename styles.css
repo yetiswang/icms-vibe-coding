@@ -1052,18 +1052,13 @@ body {
 }
 
 /* Scope the global "center scenes" rule away from scenes that need top-anchored content */
+/* Hybrid: center-by-default (already set on .scene), flex-start only for
+   scenes that genuinely need top-anchoring or fill-the-frame patterns. */
 .scene-cold-open,
 .scene-closing,
-.scene-ppt-life,
-.scene-vs,
-.scene-harness,
-.scene-workflow,
-.scene-cli-1,
-.scene-cli-2,
 .scene-iframe,
-.scene-second-brain,
-.scene-paths,
-.scene-icms-impact {
+.scene-ppt-life,
+.scene-vs {
   justify-content: flex-start;
 }
 .scene-cold-open .title {
@@ -1110,4 +1105,55 @@ body {
 }
 .scene-icms-impact .impact-list li {
   align-items: flex-start;
+}
+
+/* === Polish pass — center the dense scenes, fix synthetic weights === */
+
+/* Card-heavy scenes get their grids visually centered within the available space */
+.scene-harness .harness-grid,
+.scene-workflow .workflow-steps,
+.scene-paths .paths-split,
+.scene-second-brain .brain-flow,
+.scene-icms-impact .impact-list {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* Avoid synthetic weight: @font-face only declares 400 + 700.
+   600 was being faked by the renderer. Round headlines up to 700. */
+.scene-icms-impact .impact-headline {
+  font-weight: 700;
+}
+
+/* Slide 14 brain-credit: small italic Karpathy line, balance with caption above */
+.scene-second-brain .brain-credit {
+  margin-top: 0.4rem;
+}
+
+/* Slide 17 invite: add breathing room, the line under the title */
+.scene-invite .invite-line {
+  margin-top: 1rem;
+}
+
+/* Scene 17 invite sub-line */
+.scene-invite .invite-line {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+.scene-invite .invite-sub {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0;
+}
+
+/* Scene 18 closing tech-stack credit */
+.scene-closing .closing-stack {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+  font-family: var(--font-mono);
 }

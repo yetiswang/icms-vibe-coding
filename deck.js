@@ -354,7 +354,7 @@ if (scene9) {
       { text: 'Avenir Next LT Pro', cls: 'term-key' },
     ]},
     { segments: [
-      { text: 'planning 17 scenes ... ', cls: 'term-out' },
+      { text: 'planning 18 scenes ... ', cls: 'term-out' },
       { text: 'done', cls: 'term-ok' },
     ]},
     { segments: [
