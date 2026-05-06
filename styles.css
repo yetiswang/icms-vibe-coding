@@ -1370,3 +1370,38 @@ body {
 .scene-cli-2 .terminal {
   max-width: 78ch;
 }
+
+/* Scene 4 historical timeline (beat 9) */
+.scene-vs .vs-history {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  border-left: 2px solid rgba(200,16,46,0.4);
+  padding-left: 1rem;
+  max-width: 90ch;
+}
+.scene-vs .vs-history-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.scene-vs .vs-history-year {
+  color: var(--tue-red);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  padding-top: 0.15rem;
+}
+.scene-vs .vs-history-text {
+  color: rgba(255,255,255,0.78);
+}
+
+/* Tagline gets a touch more breathing room above it now */
+.scene-vs .vs-tagline {
+  margin-top: 1.2rem;
+}
