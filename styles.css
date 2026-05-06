@@ -2337,3 +2337,32 @@ body {
     margin-bottom: 1rem;
   }
 }
+
+/* === Grain texture overlay (restores the original Style C "techy" feel) ===
+   Tiny dot pattern at 4px spacing layered ABOVE scene content but
+   pointer-events: none so it never intercepts clicks/touches. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0),
+    radial-gradient(circle at 3px 3px, rgba(200,16,46,0.025) 1px, transparent 0);
+  background-size: 4px 4px, 6px 6px;
+  pointer-events: none;
+  z-index: 90;          /* above scenes (default), below overlays (100+) */
+  mix-blend-mode: screen;
+}
+
+/* Light mode: dial it way down (cream paper doesn't need film grain) */
+[data-theme="light"] body::after {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(30,30,40,0.045) 1px, transparent 0),
+    radial-gradient(circle at 3px 3px, rgba(200,16,46,0.02) 1px, transparent 0);
+  mix-blend-mode: multiply;
+}
+
+/* Disable on mobile: overhead isn't worth it on phones */
+@media (max-width: 600px) {
+  body::after { display: none; }
+}
