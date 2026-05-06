@@ -164,6 +164,15 @@ document.addEventListener('keydown', e => {
       e.preventDefault();
       toggleHelp();
       break;
+    case 'f':
+    case 'F':
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+      break;
   }
 });
 
