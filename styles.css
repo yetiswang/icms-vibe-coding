@@ -2070,3 +2070,136 @@ body {
   #theme-toggle { top: 10px; right: 10px; width: 40px; height: 40px; }
   #theme-toggle svg { width: 18px; height: 18px; }
 }
+
+/* === Mobile fixes (round 2): overflow + theme toggle visibility === */
+
+/* Safe-area inset for iPhone X+ notch / Dynamic Island */
+#theme-toggle {
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  z-index: 250;
+}
+#touch-nav {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  right: calc(env(safe-area-inset-right, 0px) + 14px);
+  z-index: 250;
+}
+
+@media (max-width: 880px) {
+  /* Let body scroll, scenes flow naturally instead of fixed-position */
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+  }
+  #deck {
+    height: auto;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+  }
+  .scene {
+    position: relative;
+    inset: auto;
+    height: auto;
+    min-height: 100vh;
+    padding: 8vh 5vw 14vh;       /* leaves room for footer + touch-nav at bottom */
+    overflow: visible;
+  }
+  .scene.active { display: flex; }
+
+  /* Force everything to wrap inside the viewport width */
+  .scene .title,
+  .scene .caption,
+  .scene .subtitle,
+  .scene .vs-line,
+  .scene .impact-headline,
+  .scene .impact-sub,
+  .scene .vault-line,
+  .scene .moment-line,
+  .scene .harness-desc,
+  .scene .harness-detail,
+  .scene .workflow-desc,
+  .scene .workflow-detail,
+  .scene .path-name,
+  .scene .path-note,
+  .scene .brain-step-desc,
+  .scene .brain-credit,
+  .scene .vs-history-text,
+  .scene .vs-tagline,
+  .scene .vs-setup,
+  .scene .closing-source,
+  .scene .closing-stack,
+  .scene .closing-credit {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Footer-strip flows in-line on mobile (was absolute → got cut off when scene scrolled) */
+  .scene .footer-strip {
+    position: static;
+    margin-top: 2rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--theme-rule);
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  /* Cold-open: flow naturally, smaller hero scale */
+  .scene-cold-open { padding-top: 12vh; }
+  .scene-cold-open .title { font-size: clamp(2rem, 9vw, 3rem); }
+
+  /* Closing: tighter top */
+  .scene-closing { padding-top: 12vh; }
+  .scene-closing .title { font-size: clamp(1.6rem, 7vw, 2.4rem); margin-top: 4vh; }
+
+  /* Iframe scenes: cap iframe height so they don't dominate the screen */
+  .scene-iframe .iframe-wrap {
+    height: 60vh;
+    min-height: 360px;
+    flex: none;
+  }
+
+  /* Scene 14 obsidian panes: smaller fixed height, scroll inside */
+  .scene-second-brain .obs-pane {
+    height: auto;
+    min-height: 24vh;
+  }
+  .scene-second-brain .obs-graph-svg { height: 24vh; }
+
+  /* Scene 5 harness icons + names compact */
+  .scene-harness .harness-icon { font-size: 1.6rem; }
+  .scene-harness .harness-name { font-size: 1.05rem; }
+
+  /* History timeline rows: keep year + text on same row even with break */
+  .scene-vs .vs-history-row {
+    grid-template-columns: 4.5rem 1fr;
+    font-size: 0.7rem;
+  }
+
+  /* Long terminal titlebar paths can overflow — clip */
+  .titlebar-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    white-space: nowrap;
+    margin-right: 0 !important;
+  }
+
+  /* Scene grid tiles: more vertical breathing room */
+  #scene-grid .tile {
+    padding: 0.6rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* Phones in particular: drop touch-nav button size slightly so the row doesn't crowd */
+@media (max-width: 480px) {
+  #touch-nav button { width: 44px; height: 44px; font-size: 20px; }
+  #theme-toggle { width: 40px; height: 40px; }
+  #theme-toggle svg { width: 18px; height: 18px; }
+}
