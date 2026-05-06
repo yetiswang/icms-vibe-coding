@@ -387,9 +387,9 @@ if (scene6) {
   ]);
 }
 
-const scene9 = scenes.find(s => s.dataset.scene === '9');
-if (scene9) {
-  registerTypewriter(scene9, [
+const scene18 = scenes.find(s => s.dataset.scene === '18');
+if (scene18) {
+  registerTypewriter(scene18, [
     { segments: [
       { text: '$ ', cls: 'term-prompt' },
       { text: 'claude', cls: 'term-user' },
