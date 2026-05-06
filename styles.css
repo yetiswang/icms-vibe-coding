@@ -1344,3 +1344,29 @@ body {
 .scene-ppt-life .caption.muted {
   font-size: 1rem;
 }
+
+/* === Terminal: thinking + tool-call line styles (scenes 6 and 9) === */
+.term-think {
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+}
+.term-tool {
+  color: var(--tue-red);
+  font-weight: 600;
+}
+.term-toolout {
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+}
+
+/* Terminal body: increase min-height for the longer scenes 6 and 9 sequences */
+.scene-cli-1 .terminal .body,
+.scene-cli-2 .terminal .body {
+  min-height: 18em;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+.scene-cli-1 .terminal,
+.scene-cli-2 .terminal {
+  max-width: 78ch;
+}
