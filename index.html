@@ -325,34 +325,94 @@
       </div>
     </section>
 
-    <!-- Scene 12: Second brain teaser -->
-    <section class="scene scene-second-brain" data-scene="14" data-beats="5" data-act="4">
+    <!-- Scene 14: Second brain — simulated Obsidian vault + graph + Claude terminal -->
+    <section class="scene scene-second-brain" data-scene="14" data-beats="4" data-act="4">
       <div class="eyebrow">Act 4 · Scene 14 · Second brain</div>
       <h2 class="title">An <em>Obsidian vault</em> the AI can read.</h2>
-      <div class="brain-flow">
-        <div class="brain-step" data-beat="1">
-          <div class="brain-step-num">01</div>
-          <div class="brain-step-name">Capture</div>
-          <div class="brain-step-desc">Daily notes, meeting notes, paper highlights, half-finished thoughts. Plain markdown files. Yours forever, in any text editor.</div>
+
+      <!-- Three-pane simulated Obsidian: file tree · open note · graph view -->
+      <div class="obs-mockup" data-beat="1">
+        <div class="obs-pane obs-files">
+          <div class="obs-pane-title">VAULT</div>
+          <div class="obs-folder">📁 00-Inbox</div>
+          <div class="obs-folder">
+            📁 10-Research
+            <div class="obs-file">papers/</div>
+            <div class="obs-file">topics/</div>
+            <div class="obs-file open">Self-driving lab.md</div>
+          </div>
+          <div class="obs-folder">
+            📁 20-Work
+            <div class="obs-file">meetings/</div>
+            <div class="obs-file">stakeholders/</div>
+          </div>
+          <div class="obs-folder">📁 40-Life</div>
+          <div class="obs-folder">📁 90-Archive</div>
         </div>
-        <div class="brain-step" data-beat="2">
-          <div class="brain-step-num">02</div>
-          <div class="brain-step-name">Link</div>
-          <div class="brain-step-desc">Internal links tie related ideas together. Tags, mentions, an evolving diagram of your thinking emerges over time.</div>
+
+        <div class="obs-pane obs-note">
+          <div class="obs-pane-title">SELF-DRIVING LAB.MD</div>
+          <div class="obs-note-body">
+            <p class="obs-h1"># Self-driving lab</p>
+            <p>A closed-loop platform where AI proposes the next experiment and the lab runs it autonomously.</p>
+            <p>Connected to <span class="obs-wikilink">[[NWO LSRI]]</span>, part of the <span class="obs-wikilink">[[DiscoveryLabNL]]</span> programme.</p>
+            <p>Key collaborators: <span class="obs-wikilink">[[Jan van Hest]]</span>, <span class="obs-wikilink">[[Marc Geers]]</span>.</p>
+            <p>See also: <span class="obs-wikilink">[[Active learning loops]]</span>, <span class="obs-wikilink">[[Multimodal characterisation]]</span>.</p>
+            <p class="obs-tags">#sdl  #materials  #2026</p>
+          </div>
         </div>
-        <div class="brain-step" data-beat="3">
-          <div class="brain-step-num">03</div>
-          <div class="brain-step-name">Ask</div>
-          <div class="brain-step-desc">Claude reads your notes as background. Answers come grounded in what you've already written. Your knowledge, in your voice.</div>
+
+        <div class="obs-pane obs-graph">
+          <div class="obs-pane-title">GRAPH VIEW</div>
+          <svg viewBox="0 0 220 200" class="obs-graph-svg" aria-hidden="true">
+            <line x1="110" y1="100" x2="40"  y2="40"  class="obs-edge"/>
+            <line x1="110" y1="100" x2="180" y2="40"  class="obs-edge"/>
+            <line x1="110" y1="100" x2="40"  y2="160" class="obs-edge"/>
+            <line x1="110" y1="100" x2="180" y2="160" class="obs-edge"/>
+            <line x1="40"  y1="40"  x2="180" y2="40"  class="obs-edge faint"/>
+            <line x1="40"  y1="160" x2="180" y2="160" class="obs-edge faint"/>
+            <line x1="40"  y1="40"  x2="40"  y2="160" class="obs-edge faint"/>
+            <circle cx="110" cy="100" r="11" class="obs-node center"/>
+            <circle cx="40"  cy="40"  r="6" class="obs-node"/>
+            <circle cx="180" cy="40"  r="6" class="obs-node"/>
+            <circle cx="40"  cy="160" r="6" class="obs-node"/>
+            <circle cx="180" cy="160" r="6" class="obs-node"/>
+            <text x="110" y="125" text-anchor="middle" class="obs-node-label">SDL</text>
+            <text x="40"  y="30"  text-anchor="middle" class="obs-node-label-sm">LSRI</text>
+            <text x="180" y="30"  text-anchor="middle" class="obs-node-label-sm">Disc.NL</text>
+            <text x="40"  y="180" text-anchor="middle" class="obs-node-label-sm">Hest</text>
+            <text x="180" y="180" text-anchor="middle" class="obs-node-label-sm">Geers</text>
+          </svg>
         </div>
       </div>
-      <p class="caption" data-beat="4">
-        AI is only as good as the <em>context</em> you give it.<br>
-        Plain-text notes are a universal language. Your second brain becomes something the AI can read.
+
+      <!-- Mini Claude terminal acting on the vault -->
+      <div class="obs-terminal" data-beat="2">
+        <div class="terminal">
+          <div class="titlebar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="titlebar-text">~/MyBrain — claude</span>
+          </div>
+          <div class="body">
+            <span class="term-line"><span class="term-prompt">$ </span><span class="term-user">claude</span></span>
+            <span class="term-line"><span class="term-prompt">&gt; </span><span class="term-user">summarise the May 5 SDL meeting and link it back to my notes</span></span>
+            <span class="term-line"><span class="term-think">↪ thinking… find the meeting note, summarise, then add backlinks to existing concepts.</span></span>
+            <span class="term-line"><span class="term-tool">⚙ tool </span><span class="term-key">read </span><span class="term-out">20-Work/meetings/2026-05-05-sdl.md → 47 lines</span></span>
+            <span class="term-line"><span class="term-tool">⚙ tool </span><span class="term-key">write </span><span class="term-out">10-Research/Self-driving lab.md   </span><span class="term-toolout">+ 3 backlinks: [[NWO LSRI]], [[Jan van Hest]], [[Active learning loops]]</span></span>
+            <span class="term-line"><span class="term-ok">✓ vault updated · graph view refreshed · 3 new edges</span></span>
+          </div>
+        </div>
+      </div>
+
+      <p class="caption" data-beat="3">
+        Plain markdown. Wikilinks. A graph that grows with you.<br>
+        Claude reads it as <em>context</em>, edits it from the terminal — your second brain stays yours.
       </p>
-      <p class="brain-credit" data-beat="5">
+
+      <p class="brain-credit" data-beat="4">
         Inspired by Andrej Karpathy's writings on personal AI knowledge systems. <span class="muted-inline">I keep a vault myself, won't show its contents (privacy), happy to chat one-on-one.</span>
       </p>
+
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
         <span class="scene-counter"></span>
