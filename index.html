@@ -24,8 +24,8 @@
       </div>
     </section>
 
-    <!-- Scene 2: PowerPoint life — knowledge-worker frustration -->
-    <section class="scene scene-ppt-life" data-scene="2" data-beats="4" data-act="1">
+    <!-- Scene 2: PowerPoint life — knowledge-worker frustration, with window-stack animation -->
+    <section class="scene scene-ppt-life" data-scene="2" data-beats="6" data-act="1">
       <div class="eyebrow">Act 1 · Scene 2</div>
       <h2 class="title">A typical week of a knowledge worker.</h2>
       <div class="task-grid" data-beat="1">
@@ -36,21 +36,45 @@
         <div class="task-pill">📧 long-form email</div>
         <div class="task-pill">📋 grant report</div>
       </div>
-      <div class="ppt-stack" data-beat="2">
-        <div class="ppt-thumb"></div>
-        <div class="ppt-thumb"></div>
-        <div class="ppt-thumb"></div>
-        <div class="ppt-thumb"></div>
-        <div class="ppt-thumb"></div>
-        <div class="ppt-thumb"></div>
+
+      <!-- Animated stack of windows the worker juggles all day -->
+      <div class="window-stage" data-beat="2">
+        <div class="mock-window mw-1">
+          <div class="mw-titlebar"><span class="mw-dots"><i></i><i></i><i></i></span><span class="mw-tab">Slides — Q3-pillars-v4-FINAL.pptx</span></div>
+          <div class="mw-content"><span class="mw-line w70"></span><span class="mw-line w50"></span><span class="mw-line w60"></span></div>
+        </div>
+        <div class="mock-window mw-2">
+          <div class="mw-titlebar"><span class="mw-dots"><i></i><i></i><i></i></span><span class="mw-tab">Word — Grant-rebuttal-draft.docx</span></div>
+          <div class="mw-content"><span class="mw-line w80"></span><span class="mw-line w70"></span><span class="mw-line w55"></span><span class="mw-line w65"></span></div>
+        </div>
+        <div class="mock-window mw-3">
+          <div class="mw-titlebar"><span class="mw-dots"><i></i><i></i><i></i></span><span class="mw-tab">Chrome — Funder portal · 4 tabs</span></div>
+          <div class="mw-content"><span class="mw-line w60"></span><span class="mw-line w45"></span></div>
+        </div>
+        <div class="mock-window mw-4">
+          <div class="mw-titlebar"><span class="mw-dots"><i></i><i></i><i></i></span><span class="mw-tab">Mail — 47 unread</span></div>
+          <div class="mw-content"><span class="mw-line w75"></span><span class="mw-line w50"></span><span class="mw-line w65"></span></div>
+        </div>
       </div>
+
       <p class="caption" data-beat="3">
-        Drag a box. Pick a colour. Realign the third bullet. Resize the figure.<br>
-        Reformat the table. Hunt for the right brand red. Repeat.
+        We move between windows all day, doing what the <em>software</em> needs from us, not what we need from it.
       </p>
       <p class="caption muted" data-beat="4">
-        AI was supposed to help. Somehow most of us are still doing this by hand.
+        Every friction the designers left behind, our brains quietly absorb.
       </p>
+
+      <!-- A chatbot window joins the stack — same juggle, just one more tab -->
+      <div class="window-chatbot" data-beat="5">
+        <div class="mw-titlebar"><span class="mw-dots"><i></i><i></i><i></i></span><span class="mw-tab">Chat — yet another window</span></div>
+        <div class="mw-content"><span class="chat-bubble">How do I make my slides nicer?</span><span class="chat-typing"><i></i><i></i><i></i></span></div>
+      </div>
+
+      <p class="caption muted" data-beat="6">
+        Then chatbots arrived. We delegated some work, gratefully.<br>
+        But the chatbot lived in <em>yet another window</em>. Same juggle, one more tab.
+      </p>
+
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
         <span class="scene-counter"></span>
