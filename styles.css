@@ -734,3 +734,15 @@ html, body {
   letter-spacing: 1px;
   color: white;
 }
+
+/* Tile is now a <button> — reset native button styling */
+#scene-grid .tile {
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  width: 100%;
+}
+#scene-grid .tile:focus {
+  outline: 2px solid var(--tue-red);
+  outline-offset: 2px;
+}

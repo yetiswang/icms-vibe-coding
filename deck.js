@@ -99,8 +99,9 @@ function buildSceneGrid() {
   scenes.forEach((s, i) => {
     const num = String(i + 1).padStart(2, '0');
     const title = s.querySelector('.title')?.textContent?.trim() || s.querySelector('.eyebrow')?.textContent?.trim() || `Scene ${num}`;
-    const tile = document.createElement('div');
+    const tile = document.createElement('button');
     tile.className = 'tile';
+    tile.type = 'button';
     const numEl = document.createElement('div');
     numEl.className = 'num';
     numEl.textContent = num;
@@ -108,13 +109,17 @@ function buildSceneGrid() {
     titleEl.textContent = title;
     tile.appendChild(numEl);
     tile.appendChild(titleEl);
-    tile.addEventListener('click', () => {
+    const jump = () => {
       state.current = i;
       state.beat = 0;
       sceneGrid.hidden = true;
       const tw = typewriters.get(activeScene().dataset.scene);
       if (tw) tw.reset();
       render();
+    };
+    tile.addEventListener('click', jump);
+    tile.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(); }
     });
     grid.appendChild(tile);
   });
@@ -134,15 +139,13 @@ function toggleHelp() {
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-  // Shift+Space → skip rest of current terminal line (do not advance to next line)
+  // Shift+Space → skip rest of current terminal line. No-op when no typewriter is active.
   if (e.key === ' ' && e.shiftKey) {
+    e.preventDefault();
     const scene = activeScene();
     const tw = typewriters.get(scene?.dataset.scene);
-    if (tw && tw.timer) {
-      e.preventDefault();
-      tw.completeCurrentLine();
-      return;
-    }
+    if (tw && tw.timer) tw.completeCurrentLine();
+    return;
   }
 
   switch (e.key) {
@@ -342,7 +345,7 @@ if (scene8) {
       { text: 'Avenir Next LT Pro', cls: 'term-key' },
     ]},
     { segments: [
-      { text: 'planning 18 scenes ... ', cls: 'term-out' },
+      { text: 'planning 17 scenes ... ', cls: 'term-out' },
       { text: 'done', cls: 'term-ok' },
     ]},
     { segments: [
