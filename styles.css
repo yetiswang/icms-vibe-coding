@@ -914,3 +914,107 @@ body {
   margin-top: 0.4rem;
   font-size: 0.9rem;
 }
+
+/* === Wave 3 format audit === */
+
+/* Vertically center scene content by default — fights the "all content jammed to top" feel */
+.scene {
+  justify-content: center;
+  gap: 0.4rem;
+}
+/* But cold open and closing scenes use a different pattern (margin-top: auto on title) */
+.scene-cold-open,
+.scene-closing {
+  justify-content: flex-start;
+}
+
+/* Title: a bit more horizontal room */
+.scene .title {
+  max-width: 90%;
+  margin-bottom: 1.2rem;
+}
+
+/* Counter slightly larger for legibility from the back of the room */
+.scene .footer-strip {
+  font-size: 0.72rem;
+  bottom: 1.6vh;
+}
+
+/* PowerPoint life: shrink ppt thumbs so the new task pills + caption + muted line all fit */
+.scene-ppt-life .ppt-stack {
+  max-width: 480px;
+  gap: 0.6rem;
+  margin: 0.4rem 0 0.8rem;
+}
+.scene-ppt-life .ppt-thumb {
+  border-radius: 3px;
+}
+
+/* Scene 3: stack is a bit roomy for one line of text. Cap title size and tighten gap */
+.scene-moment .moment-stack {
+  gap: 1rem;
+  max-width: 32ch;
+}
+
+/* Harness cards: more breathing room, balance with detail line */
+.scene-harness .harness-grid {
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+.scene-harness .harness-card {
+  padding: 1.3rem 1.3rem 1.5rem;
+}
+
+/* Workflow steps: tighter gap and smaller arrow column */
+.scene-workflow .workflow-steps {
+  gap: 1rem;
+}
+.scene-workflow .workflow-arrow {
+  width: 32px;
+}
+
+/* Two-paths scene: 3 columns can be cramped on smaller widths; allow 2-row wrap */
+.scene-paths .paths-split {
+  gap: 1rem;
+}
+.scene-paths .path-card {
+  padding: 1.2rem;
+}
+.scene-paths .path-list li {
+  font-size: 0.85rem;
+  padding: 0.15rem 0;
+}
+.scene-paths .path-name {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Second-brain (scene 14): tighten card padding so caption + credit fit clean */
+.scene-second-brain .brain-flow {
+  gap: 1rem;
+  margin: 1.2rem 0 0.8rem;
+}
+.scene-second-brain .brain-step {
+  padding: 1.2rem;
+}
+.scene-second-brain .brain-step-name {
+  font-size: 1.25rem;
+}
+
+/* Iframe scenes: reduce caption size, ensure iframe takes most space */
+.scene-iframe .iframe-wrap {
+  margin: 0.7rem 0 0.4rem;
+}
+.scene-iframe .caption.muted {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* Closing scene: re-pin title near the centre */
+.scene-closing .title {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  margin-top: 22vh;
+}
+.scene-closing .closing-credit {
+  margin-top: 1.5rem;
+}
