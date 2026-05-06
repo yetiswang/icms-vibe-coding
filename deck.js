@@ -178,6 +178,26 @@ document.addEventListener('keydown', e => {
 
 render();
 
+// === Touch / mobile navigation ===
+const touchBack = document.getElementById('touch-back');
+const touchFwd  = document.getElementById('touch-fwd');
+const touchGrid = document.getElementById('touch-grid');
+
+if (touchBack) touchBack.addEventListener('click', e => { e.stopPropagation(); retreat(); });
+if (touchFwd)  touchFwd .addEventListener('click', e => { e.stopPropagation(); advance(); });
+if (touchGrid) touchGrid.addEventListener('click', e => { e.stopPropagation(); toggleSceneGrid(); });
+
+// Tap-anywhere advancement (touch / mouse). Skips iframes and interactive UI.
+document.addEventListener('click', e => {
+  if (sceneGrid.hidden === false || helpOverlay.hidden === false) return;
+  if (e.target.closest('#touch-nav, iframe, button, a[href], input, .tile, .iframe-wrap')) return;
+  const w = window.innerWidth;
+  const x = e.clientX;
+  if (x > w * 0.55) advance();
+  else if (x < w * 0.30) retreat();
+  // 30%–55% middle band: no-op (avoids accidental retreats on text drags)
+});
+
 class Typewriter {
   constructor(rootEl, lines) {
     this.root = rootEl;
