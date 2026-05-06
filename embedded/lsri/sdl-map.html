@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Global SDL Landscape · Map</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+
+<style>
+:root{
+  --bg:         oklch(0.18 0.01 240);
+  --bg-2:       oklch(0.22 0.01 240);
+  --bg-3:       oklch(0.26 0.01 240);
+  --ink:        oklch(0.94 0.01 85);
+  --ink-2:      oklch(0.78 0.01 85);
+  --ink-3:      oklch(0.58 0.01 85);
+  --ink-4:      oklch(0.42 0.01 240);
+  --rule:       oklch(0.32 0.01 240);
+  --rule-2:     oklch(0.28 0.01 240);
+  --land:       oklch(0.24 0.01 240);
+  --land-edge:  oklch(0.32 0.01 240);
+  --graticule:  oklch(0.26 0.01 240);
+
+  --c-national:   oklch(0.78 0.14 85);
+  --c-academic:   oklch(0.78 0.14 200);
+  --c-commercial: oklch(0.72 0.18 25);
+  --c-labos:      oklch(0.78 0.14 300);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+*{ box-sizing:border-box; }
+html, body{ margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:var(--font-sans); }
+body{ min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+#app{
+  display:grid;
+  grid-template-columns: 300px 1fr 320px;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "left   map    right"
+    "footer footer footer";
+  gap:0;
+  min-height:100vh;
+}
+
+/* Header */
+header.top{
+  grid-area:header;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding:22px 28px 18px;
+  border-bottom:1px solid var(--rule);
+  gap:40px;
+}
+.brand .eyebrow{
+  font-family:var(--font-mono); font-size:11px; color:var(--ink-3);
+  letter-spacing:0.22em; text-transform:uppercase; margin-bottom:6px;
+}
+.brand h1{
+  font-family:var(--font-sans); font-weight:600; font-size:28px; letter-spacing:-0.01em;
+  margin:0; color:var(--ink);
+}
+.brand h1 .dim{ color:var(--ink-3); font-weight:400; }
+
+.counts{
+  display:flex; gap:28px; font-family:var(--font-mono); font-size:11px; color:var(--ink-3);
+  letter-spacing:0.1em;
+}
+.counts .n{ color:var(--ink); font-size:22px; font-weight:500; letter-spacing:0; display:block; font-variant-numeric:tabular-nums; }
+.counts .lbl{ text-transform:uppercase; }
+
+/* Sidebars */
+aside{
+  padding:24px 22px 24px;
+  border-right:1px solid var(--rule);
+  overflow-y:auto;
+  max-height:calc(100vh - 150px);
+}
+aside.right{ border-right:0; border-left:1px solid var(--rule); grid-area:right; }
+aside.left{ grid-area:left; }
+
+.section-h{
+  font-family:var(--font-mono); font-size:10px; color:var(--ink-3);
+  letter-spacing:0.22em; text-transform:uppercase;
+  margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--rule-2);
+}
+.section-h:first-child{ margin-top:0; }
+
+/* Filter chips */
+.chips{ display:flex; flex-direction:column; gap:4px; }
+.chip{
+  display:flex; align-items:center; gap:10px;
+  padding:7px 10px; border-radius:3px;
+  background:transparent; border:1px solid transparent;
+  cursor:pointer; font-family:var(--font-sans); font-size:13px; color:var(--ink-2);
+  text-align:left; width:100%;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.chip:hover{ background:var(--bg-2); color:var(--ink); }
+.chip.active{
+  background:var(--bg-2); border-color:var(--rule); color:var(--ink);
+}
+.chip .dot{
+  width:8px; height:8px; border-radius:50%; background:var(--ink-4); flex:0 0 auto;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3) inset;
+}
+.chip.active .dot{ box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px currentColor; }
+.chip .n{
+  margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.chip.dim{ opacity:0.5; }
+
+.chip[data-tier="national"]   .dot{ background:var(--c-national); }
+.chip[data-tier="academic"]   .dot{ background:var(--c-academic); }
+.chip[data-tier="commercial"] .dot{ background:var(--c-commercial); }
+.chip[data-tier="labos"]      .dot{ background:var(--c-labos); }
+
+.legend-row{
+  display:flex; align-items:center; gap:10px; padding:5px 0;
+  font-size:12px; color:var(--ink-2);
+}
+.legend-row .sw{ width:12px; height:12px; border-radius:50%; }
+
+/* Reset button */
+.reset-btn{
+  width:100%; margin-top:8px;
+  padding:8px 10px; background:transparent;
+  border:1px solid var(--rule); color:var(--ink-2);
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; border-radius:2px;
+}
+.reset-btn:hover{ background:var(--bg-2); color:var(--ink); }
+
+/* Map */
+.map-wrap{
+  grid-area:map;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 45%, oklch(0.22 0.01 240) 0%, var(--bg) 80%);
+}
+#map{ width:100%; height:100%; display:block; touch-action:none; user-select:none; }
+.map-wrap svg{ width:100%; height:100%; display:block; }
+
+.graticule{ fill:none; stroke:var(--graticule); stroke-width:0.5; opacity:0.5; vector-effect:non-scaling-stroke; }
+.sphere{ fill:none; stroke:var(--rule); stroke-width:1; vector-effect:non-scaling-stroke; }
+.sphere-fill{ pointer-events:none; }
+.atmosphere{ pointer-events:none; }
+.specular{ pointer-events:none; }
+.land{ fill:var(--land); stroke:none; vector-effect:non-scaling-stroke; transition: opacity .3s; }
+.filtering .land{ opacity:0.5; }
+.filtering .graticule{ opacity:0.2; }
+.borders{ fill:none; stroke:oklch(0.32 0.01 240); stroke-width:0.5; opacity:0.9; vector-effect:non-scaling-stroke; stroke-linejoin:round; }
+.borders-outer{ fill:none; stroke:oklch(0.40 0.01 240); stroke-width:0.7; vector-effect:non-scaling-stroke; stroke-linejoin:round; }
+.provinces{
+  fill:none; stroke:oklch(0.30 0.01 240); stroke-width:0.4;
+  vector-effect:non-scaling-stroke; stroke-linejoin:round;
+  stroke-dasharray: 2 2;
+  opacity:0; transition: opacity .35s;
+  pointer-events:none;
+}
+.country-label{
+  font-family:var(--font-mono); font-weight:500;
+  font-size:8px; fill:var(--ink-3); opacity:0;
+  letter-spacing:0.18em; pointer-events:none;
+  transition: opacity .35s;
+  paint-order: stroke fill;
+  stroke: var(--bg); stroke-width: 2.5px; stroke-linejoin:round;
+}
+.country-label[data-tier="1"]{ font-size:8.5px; fill:var(--ink-2); letter-spacing:0.2em; }
+.country-label[data-tier="2"]{ font-size:7.5px; fill:var(--ink-3); }
+.country-label[data-tier="3"]{ font-size:7px; fill:var(--ink-3); opacity:0.7; }
+
+.province-label{
+  font-family:var(--font-mono); font-weight:400;
+  font-size:8px; fill:var(--ink-3); opacity:0;
+  letter-spacing:0.06em; pointer-events:none;
+  transition: opacity .35s;
+  paint-order: stroke fill;
+  stroke: var(--bg); stroke-width: 2.5px; stroke-linejoin:round;
+}
+
+/* Markers */
+.marker{ cursor:pointer; transition: opacity .2s; }
+.marker .ring{ fill:none; stroke:currentColor; stroke-width:1; opacity:0.4; }
+.marker .core{ fill:currentColor; }
+.marker.dim{ opacity:0.08; pointer-events:none; }
+.marker.dim .ring{ opacity:0; }
+.marker.dim .core{ r:2; }
+
+.marker.hl{
+  filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
+}
+.marker.hl .core{ filter: brightness(1.4); }
+.marker.hl .ring{ opacity:0.8; stroke-width:1.5; }
+.marker.hl .pulse{
+  fill:none; stroke:currentColor; stroke-width:1.5;
+  animation: pulse 1.8s ease-out infinite;
+  transform-origin: center;
+}
+@keyframes pulse{
+  0%   { r: 6;  opacity:0.8; stroke-width:2; }
+  100% { r: 28; opacity:0;   stroke-width:0.5; }
+}
+
+.marker-label{
+  font-family:var(--font-mono); font-size:9.5px; fill:var(--ink-2);
+  pointer-events:none; letter-spacing:0.02em;
+  text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg);
+}
+
+/* Tooltip */
+.tip{
+  position:absolute; pointer-events:none;
+  background:oklch(0.14 0.01 240 / 0.96);
+  border:1px solid var(--rule);
+  border-radius:3px;
+  padding:12px 14px;
+  min-width:260px; max-width:320px;
+  color:var(--ink);
+  backdrop-filter:blur(6px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  opacity:0; transition: opacity .14s;
+  z-index:20;
+  font-size:12px;
+}
+.tip.show{ opacity:1; }
+.tip .t-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.tip .t-dot{ width:10px; height:10px; border-radius:50%; }
+.tip .t-name{ font-weight:600; font-size:14px; line-height:1.2; }
+.tip .t-meta{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+.tip .t-row{ display:flex; justify-content:space-between; gap:14px; padding:3px 0; color:var(--ink-2); }
+.tip .t-row .k{ color:var(--ink-3); font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; }
+.tip .t-row .v{ text-align:right; }
+
+/* Right rail: active highlight list */
+.list{ display:flex; flex-direction:column; gap:0; }
+.list-item{
+  padding:10px 4px; border-bottom:1px solid var(--rule-2);
+  display:grid; grid-template-columns: 14px 1fr auto; gap:10px; align-items:start;
+  cursor:pointer;
+}
+.list-item:hover{ background:var(--bg-2); }
+.list-item .ldot{ width:8px; height:8px; border-radius:50%; margin-top:6px; }
+.list-item .lname{ font-size:13px; color:var(--ink); font-weight:500; line-height:1.25; }
+.list-item .lmeta{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3); letter-spacing:0.04em; margin-top:2px; }
+.list-item .lcountry{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-2); letter-spacing:0.04em; }
+
+/* Footer */
+footer.bot{
+  grid-area:footer;
+  padding:12px 28px;
+  border-top:1px solid var(--rule);
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3);
+  letter-spacing:0.12em; text-transform:uppercase;
+}
+footer .leg{ display:flex; gap:20px; align-items:center; }
+footer .leg .item{ display:flex; gap:6px; align-items:center; }
+footer .leg .circ{ border:1px solid var(--ink-3); border-radius:50%; }
+
+.empty{
+  font-family:var(--font-mono); font-size:11px; color:var(--ink-3);
+  padding:16px 4px; text-align:center; border:1px dashed var(--rule-2); border-radius:3px;
+}
+
+/* Zoom controls */
+.zoom-ctl{
+  position:absolute; top:16px; right:16px; z-index:10;
+  display:flex; flex-direction:column; gap:4px;
+  background:oklch(0.14 0.01 240 / 0.9);
+  border:1px solid var(--rule); border-radius:4px;
+  padding:4px;
+  backdrop-filter:blur(4px);
+}
+.zoom-ctl button{
+  width:32px; height:32px; padding:0;
+  background:transparent; border:0;
+  color:var(--ink-2); cursor:pointer;
+  font-family:var(--font-mono); font-size:18px; line-height:1;
+  border-radius:2px;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .12s, color .12s;
+}
+.zoom-ctl button:hover{ background:var(--bg-3); color:var(--ink); }
+.zoom-ctl button:active{ background:var(--bg-2); }
+.zoom-ctl button + button{ border-top:1px solid var(--rule-2); }
+.zoom-ctl #z-reset{ font-size:15px; }
+
+/* Region navigation buttons — overlaid on the map, below zoom controls */
+.region-nav{
+  position:absolute; top:140px; right:16px; z-index:20;
+  display:flex; flex-direction:column; gap:4px;
+}
+.region-nav button{
+  padding:6px 10px;
+  background:oklch(0.14 0.01 240 / 0.9);
+  border:1px solid var(--rule);
+  color:var(--ink-2); cursor:pointer;
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+  border-radius:3px;
+  backdrop-filter:blur(4px);
+  transition:background .15s, color .15s, border-color .15s;
+}
+.region-nav button:hover{ background:var(--bg-3); color:var(--ink); border-color:var(--ink-3); }
+.region-nav button.active-region{ border-color:var(--accent); color:var(--accent); }
+
+/* Filter callout — contextual annotation on the map */
+.filter-callout{
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-family:var(--font-mono); font-size:11px; color:var(--ink-2);
+  letter-spacing:0.04em; line-height:1.5;
+  padding:8px 16px; border:1px solid var(--accent); border-radius:3px;
+  background:oklch(0.14 0.01 240 / 0.88); backdrop-filter:blur(6px);
+  max-width:520px; text-align:center;
+  pointer-events:none; z-index:25;
+  opacity:0; transition:opacity .4s;
+}
+.filter-callout.visible{ opacity:1; }
+.filter-callout strong{ color:var(--accent); }
+
+.zoom-hint{
+  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  font-family:var(--font-mono); font-size:10.5px; color:var(--ink-3);
+  letter-spacing:0.14em; text-transform:uppercase;
+  padding:6px 14px; border:1px solid var(--rule-2); border-radius:2px;
+  background:oklch(0.14 0.01 240 / 0.7); backdrop-filter:blur(4px);
+  pointer-events:none; transition:opacity .5s;
+}
+.zoom-hint.fade{ opacity:0; }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+// Global SDL initiatives — geocoded from Global-SDL-Landscape.md
+window.SDL_DATA = [
+  // National / Consortium
+  { id:"accel",     name:"Acceleration Consortium",            org:"University of Toronto",        city:"Toronto",       country:"Canada",       flag:"\u{1F1E8}\u{1F1E6}", lat:43.66, lon:-79.40, tier:"national",  domain:"chemistry",      maturity:"operational", charact:"synthesis-only", ai:"partial", scale:"multi-lab",     invest:500, investLabel:"$500M (CFREF+matched)" },
+  { id:"capex",     name:"CAPeX Pioneer Center",               org:"DTU + 4 universities",         city:"Lyngby",        country:"Denmark",      flag:"\u{1F1E9}\u{1F1F0}", lat:55.79, lon:12.52,  tier:"national",  domain:"energy",         maturity:"operational", charact:"advanced-multimodal", ai:"strong",  scale:"national",      invest:43,  investLabel:"\u20AC40M / 13 yrs" },
+  { id:"bigmap",    name:"BIG-MAP / FULL-MAP",                 org:"Battery2030+ consortium",      city:"Brussels",      country:"EU",           flag:"\u{1F1EA}\u{1F1FA}", lat:50.85, lon:4.35,   tier:"national",  domain:"batteries",      maturity:"operational", charact:"advanced-multimodal", ai:"strong",  scale:"pan-european",  invest:40,  investLabel:"\u20AC40M (H2020+HE)" },
+  { id:"doe",       name:"US DOE National Labs",               org:"DOE (ARPA-E + CHIPS)",         city:"Washington DC", country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:38.90, lon:-77.04, tier:"national",  domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"17 labs",        invest:140, investLabel:"$140M" },
+  { id:"korea500",  name:"Korea 500 SDL Initiative",           org:"MOTIE AI+R&D Strategy",        city:"Seoul",         country:"Korea",        flag:"\u{1F1F0}\u{1F1F7}", lat:37.57, lon:126.98, tier:"national",  domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"national",      invest:320, investLabel:"$320M by 2035" },
+  { id:"aria",      name:"UK ARIA AI Scientists",              org:"ARIA",                         city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.51, lon:-0.13,  tier:"national",  domain:"cross-domain",   maturity:"prototype",   charact:"single-technique", ai:"strong",  scale:"national",      invest:8,   investLabel:"\u00A36M" },
+  { id:"disclabnl", name:"DiscoveryLabNL",                     org:"NWO LSRI",                     city:"Eindhoven",     country:"Netherlands",  flag:"\u{1F1F3}\u{1F1F1}", lat:51.44, lon:5.48,   tier:"national",  domain:"materials",      maturity:"concept",     charact:"advanced-multimodal", ai:"planned", scale:"national",      invest:30, investLabel:"\u20AC30M (planned)" },
+  { id:"bigchem",   name:"Big Chemistry",                      org:"Radboud + TU/e ICMS hub",      city:"Nijmegen",      country:"Netherlands",  flag:"\u{1F1F3}\u{1F1F1}", lat:51.82, lon:5.87,   tier:"national",  domain:"chemistry",      maturity:"operational", charact:"single-technique", ai:"partial", scale:"national",      invest:225, investLabel:"\u20AC207.5M (NGF)" },
+  { id:"diadem",    name:"PEPR DIADEM",                        org:"CNRS + CEA (France 2030)",     city:"Paris",         country:"France",       flag:"\u{1F1EB}\u{1F1F7}", lat:48.86, lon:2.35,   tier:"national",  domain:"materials",      maturity:"operational", charact:"advanced-multimodal", ai:"partial", scale:"national",      invest:92,  investLabel:"\u20AC85M / 8 yrs" },
+
+  // Academic / Single institution
+  { id:"alab",      name:"A-Lab",                              org:"Berkeley / LBNL",              city:"Berkeley",      country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:37.87, lon:-122.27,tier:"academic",  domain:"materials",      maturity:"operational", charact:"single-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"polybot",   name:"Polybot",                            org:"Argonne (CNM)",                city:"Lemont",        country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:41.67, lon:-87.99, tier:"academic",  domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"cmucloud",  name:"CMU Cloud Lab",                      org:"Carnegie Mellon",              city:"Pittsburgh",    country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:40.44, lon:-79.99, tier:"academic",  domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"coscient",  name:"Coscientist",                        org:"CMU (Gomes Group)",            city:"Pittsburgh",    country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:40.45, lon:-79.95, tier:"academic",  domain:"chemistry",      maturity:"prototype",   charact:"synthesis-only", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"abolh",     name:"Abolhasani Lab",                     org:"NC State",                     city:"Raleigh",       country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:35.78, lon:-78.64, tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"single-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"genesis",   name:"Genesis",                            org:"Chalmers (King Group)",        city:"Gothenburg",    country:"Sweden",       flag:"\u{1F1F8}\u{1F1EA}", lat:57.69, lon:11.98,  tier:"academic",  domain:"biology",        maturity:"prototype",   charact:"multi-technique", ai:"strong",  scale:"single",        invest:1.3, investLabel:"\u00A31M" },
+  { id:"cooper",    name:"Cooper Lab",                         org:"Liverpool",                    city:"Liverpool",     country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:53.41, lon:-2.99,  tier:"academic",  domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"amadap",    name:"AMADAP",                             org:"FAU Erlangen",                 city:"Erlangen",      country:"Germany",      flag:"\u{1F1E9}\u{1F1EA}", lat:49.60, lon:11.00,  tier:"academic",  domain:"materials",      maturity:"prototype",   charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"nims",      name:"NIMS Autonomous AI Network",         org:"NIMS + Tsukuba",               city:"Tsukuba",       country:"Japan",        flag:"\u{1F1EF}\u{1F1F5}", lat:36.08, lon:140.11, tier:"academic",  domain:"materials",      maturity:"prototype",   charact:"single-technique", ai:"strong",  scale:"multi-inst",    invest:0,   investLabel:"\u2014" },
+  { id:"dlab",      name:"dLab",                               org:"U Tokyo",                      city:"Tokyo",         country:"Japan",        flag:"\u{1F1EF}\u{1F1F5}", lat:35.71, lon:139.76, tier:"academic",  domain:"materials",      maturity:"prototype",   charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"kaist",     name:"KAIST-POSCO Autonomous Lab",         org:"KAIST + POSCO",                city:"Daejeon",       country:"Korea",        flag:"\u{1F1F0}\u{1F1F7}", lat:36.37, lon:127.36, tier:"academic",  domain:"batteries",      maturity:"operational", charact:"single-technique", ai:"strong",  scale:"industry-academia",invest:0,investLabel:"\u2014" },
+  { id:"kist",      name:"KIST MARK System",                   org:"KIST",                         city:"Seoul",         country:"Korea",        flag:"\u{1F1F0}\u{1F1F7}", lat:37.60, lon:127.05, tier:"academic",  domain:"chemistry",      maturity:"prototype",   charact:"multi-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"snu",       name:"SNU SDL Ecosystem",                  org:"SNU / Jung Lab",               city:"Seoul",         country:"Korea",        flag:"\u{1F1F0}\u{1F1F7}", lat:37.46, lon:126.95, tier:"academic",  domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"multi-lab",     invest:0,   investLabel:"\u2014" },
+  { id:"ustc",      name:"ChemAgents",                         org:"USTC Hefei",                   city:"Hefei",         country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:31.82, lon:117.23, tier:"academic",  domain:"materials",      maturity:"operational", charact:"single-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"noel",      name:"No\u00EBl Group",                    org:"U Amsterdam",                  city:"Amsterdam",     country:"Netherlands",  flag:"\u{1F1F3}\u{1F1F1}", lat:52.36, lon:4.88,   tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"single-technique", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+
+  // Commercial / Industrial
+  { id:"lila",      name:"Lila Sciences",                      org:"Lila.ai",                      city:"Cambridge MA",  country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:42.37, lon:-71.11, tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"22,000 m\u00B2",invest:550, investLabel:"$550M" },
+  { id:"periodic",  name:"Periodic Labs",                      org:"Periodic Labs",                city:"San Francisco", country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:37.78, lon:-122.42,tier:"commercial",domain:"materials",      maturity:"prototype",   charact:"synthesis-only", ai:"strong",  scale:"commercial",    invest:0,   investLabel:"Undisclosed VC" },
+  { id:"xtalpi",    name:"XtalPi \u6676\u6CF0\u79D1\u6280",   org:"XtalPi (HKEX)",                city:"Shenzhen",      country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:22.54, lon:114.06, tier:"commercial",domain:"drug-discovery", maturity:"industrial",  charact:"multi-technique", ai:"strong",  scale:"10,000+ m\u00B2 \u00B7 300 bots",invest:6000,investLabel:"HK$47B pipeline" },
+  { id:"labgen",    name:"LabGenius",                          org:"LabGenius",                    city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.49, lon:-0.08,  tier:"commercial",domain:"biology",        maturity:"operational", charact:"single-technique", ai:"strong",  scale:"commercial",    invest:0,   investLabel:"Undisclosed VC" },
+  { id:"deepp",     name:"Deep Principle \u6DF1\u5EA6\u539F\u7406",org:"Deep Principle",           city:"Hangzhou",      country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:30.27, lon:120.15, tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"commercial",    invest:0,   investLabel:"A2 round" },
+  { id:"qingkui",   name:"Qingkui \u9752\u8475\u667A\u9020",  org:"Qingkui",                      city:"Yichang",       country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:30.69, lon:111.29, tier:"commercial",domain:"chemistry",      maturity:"industrial",  charact:"multi-technique", ai:"strong",  scale:"500+ cond/run", invest:0,   investLabel:"Municipal+VC" },
+  { id:"yong",      name:"Yongjiang Lab \u752C\u6C5F\u5B9E\u9A8C\u5BA4",org:"Provincial (Ningbo)",city:"Ningbo",        country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:29.87, lon:121.54, tier:"commercial",domain:"chemistry",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"provincial",    invest:0,   investLabel:"Government" },
+  { id:"dpt",       name:"DP Technology / Bohrium \u6DF1\u52BF\u79D1\u6280",org:"DP Technology",   city:"Beijing",       country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:39.90, lon:116.40, tier:"commercial",domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"1800+ instruments",invest:0,investLabel:"VC" },
+  { id:"jiageng",   name:"Jiageng Innovation Lab \u5609\u5E9A\u521B\u65B0\u5B9E\u9A8C\u5BA4",org:"Xiamen University / Fujian Province",city:"Xiamen",country:"China",flag:"\u{1F1E8}\u{1F1F3}", lat:24.44, lon:118.10, tier:"academic",  domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"45,000+ m\u00B2",invest:0, investLabel:"Provincial" },
+  { id:"shailab",   name:"Shanghai AI Laboratory",              org:"National AI Lab",              city:"Shanghai",      country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:31.23, lon:121.47, tier:"academic",  domain:"cross-domain",   maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"national",      invest:0,   investLabel:"Government" },
+  { id:"bytedance", name:"ByteDance Seed AI4S",                 org:"ByteDance",                    city:"Beijing",       country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:39.99, lon:116.31, tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"$12B+ AI infra",invest:0,  investLabel:"Corporate" },
+  { id:"robotchem", name:"Robot Chemist \u673A\u5668\u5316\u5B66\u5BB6",org:"USTC (Jun Jiang)", city:"Hefei",         country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:31.84, lon:117.26, tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"multi-robot",   invest:0,   investLabel:"\u2014" },
+  { id:"deeph",     name:"DeepH (Duan Group)",                  org:"Tsinghua University",          city:"Beijing",       country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:40.00, lon:116.33, tier:"academic",  domain:"materials",      maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"surff",     name:"SurFF / Uni-MOF (Wang Group)",        org:"Tsinghua University",          city:"Beijing",       country:"China",        flag:"\u{1F1E8}\u{1F1F3}", lat:39.98, lon:116.31, tier:"academic",  domain:"materials",      maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"single",        invest:0,   investLabel:"\u2014" },
+  { id:"novartis",  name:"Novartis MicroCycle",                org:"Novartis",                     city:"Basel",         country:"Switzerland",  flag:"\u{1F1E8}\u{1F1ED}", lat:47.56, lon:7.59,   tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"pharma-internal",invest:0,  investLabel:"Internal" },
+  { id:"chemspeed", name:"Chemspeed / SciY",                   org:"Bruker",                       city:"F\u00FCllinsdorf",country:"Switzerland", flag:"\u{1F1E8}\u{1F1ED}", lat:47.52, lon:7.69,   tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"vendor",        invest:0,   investLabel:"Public (BRKR)" },
+  { id:"fraun",     name:"Fraunhofer MAPs",                    org:"Fraunhofer ISC",               city:"W\u00FCrzburg", country:"Germany",      flag:"\u{1F1E9}\u{1F1EA}", lat:49.79, lon:9.93,   tier:"commercial",domain:"materials",      maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"applied network",invest:0, investLabel:"\u20AC20M" },
+  { id:"ecl",       name:"Emerald Cloud Lab",                  org:"ECL",                          city:"South San Francisco",country:"USA",     flag:"\u{1F1FA}\u{1F1F8}", lat:37.65, lon:-122.41,tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"SaaS \u00B7 200+ inst",invest:0, investLabel:"Undisclosed VC" },
+  { id:"ginkgo",    name:"Ginkgo Bioworks",                    org:"Ginkgo",                       city:"Boston",        country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:42.36, lon:-71.06, tier:"commercial",domain:"biology",        maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"300K+ sqft",    invest:786, investLabel:"$786M raised" },
+  { id:"cmuai",     name:"CMU AI Science Foundry",             org:"Carnegie Mellon",              city:"Pittsburgh",    country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:40.44, lon:-79.95, tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"national-academic",invest:0,investLabel:"Federal+Univ" },
+  { id:"strateos",  name:"Strateos",                           org:"Strateos",                     city:"San Diego",     country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:32.71, lon:-117.16,tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"single-technique", ai:"strong",  scale:"SaaS \u00B7 downsized",invest:0,investLabel:"VC" },
+  { id:"kebotix",   name:"Kebotix",                            org:"Kebotix",                      city:"Cambridge MA",  country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:42.37, lon:-71.10, tier:"commercial",domain:"materials",      maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"commercial",    invest:24,  investLabel:"$23.7M Series B" },
+  { id:"arctoris",  name:"Arctoris",                           org:"Arctoris",                     city:"Oxford",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.75, lon:-1.26,  tier:"commercial",domain:"drug-discovery", maturity:"operational", charact:"multi-technique", ai:"strong",  scale:"CRO",           invest:15,  investLabel:"~$15M" },
+  { id:"culture",   name:"Culture Biosciences",                org:"Culture Bio",                  city:"South San Francisco",country:"USA",     flag:"\u{1F1FA}\u{1F1F8}", lat:37.66, lon:-122.42,tier:"commercial",domain:"biology",        maturity:"operational", charact:"synthesis-only", ai:"strong",  scale:"hybrid cloud",  invest:107, investLabel:"$107M" },
+
+  // Lab OS / Orchestration
+  { id:"automata",  name:"Automata (LINQ)",                    org:"Automata",                     city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.52, lon:-0.10,  tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"platform",      invest:45,  investLabel:"$45M Series C" },
+  { id:"benchling", name:"Benchling",                          org:"Benchling",                    city:"San Francisco", country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:37.77, lon:-122.40,tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"SaaS",          invest:412, investLabel:"$412M \u00B7 $6B val" },
+  { id:"artificial",name:"Artificial",                         org:"Artificial",                   city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.50, lon:-0.12,  tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"SaaS",          invest:0,   investLabel:"Undisclosed" },
+  { id:"synthace",  name:"Synthace",                           org:"Synthace",                     city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.53, lon:-0.11,  tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"SaaS",          invest:0,   investLabel:"Undisclosed" },
+  { id:"unchained", name:"Unchained Labs (Stuntman)",          org:"Unchained Labs",               city:"Pleasanton",    country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:37.66, lon:-121.88,tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"platform",      invest:0,   investLabel:"Undisclosed" },
+  { id:"unitelabs", name:"UniteLabs",                          org:"UniteLabs",                    city:"Munich",        country:"Germany",      flag:"\u{1F1E9}\u{1F1EA}", lat:48.14, lon:11.58,  tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"Lab OS",        invest:0,   investLabel:"Undisclosed" },
+  { id:"cenevo",    name:"Cenevo (Titian + Labguru)",          org:"Titian + Labguru merger",      city:"London",        country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.50, lon:-0.09,  tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"SaaS",          invest:0,   investLabel:"Undisclosed" },
+  { id:"highres",   name:"HighRes + Opentrons",                org:"HighRes Biosolutions \u00D7 Opentrons",city:"Beverly",country:"USA",        flag:"\u{1F1FA}\u{1F1F8}", lat:42.56, lon:-70.88, tier:"labos",     domain:"orchestration",  maturity:"prototype",   charact:"\u2014",    ai:"strong",  scale:"platform",      invest:0,   investLabel:"Partnership" },
+  { id:"atinary",   name:"Atinary",                            org:"Atinary",                      city:"Lausanne",      country:"Switzerland",  flag:"\u{1F1E8}\u{1F1ED}", lat:46.52, lon:6.63,   tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"Lab OS",        invest:0,   investLabel:"Undisclosed" },
+  { id:"abb",       name:"ABB Robotics",                       org:"ABB",                          city:"Z\u00FCrich",   country:"Switzerland",  flag:"\u{1F1E8}\u{1F1ED}", lat:47.37, lon:8.54,   tier:"labos",     domain:"orchestration",  maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"industrial",    invest:0,   investLabel:"Public" },
+  // === Synthesis SDL Groups (added 2026-04-21) ===
+  { id:"jensen",    name:"Jensen Lab",                         org:"MIT",                          city:"Cambridge MA",  country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:42.36, lon:-71.09, tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"integrated", ai:"strong",  scale:"single",        invest:0,   investLabel:"Science 2023: 312 molecules" },
+  { id:"cronin",    name:"Cronin Group / Chemify",             org:"U Glasgow",                    city:"Glasgow",       country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:55.87, lon:-4.29,  tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"limited",    ai:"strong",  scale:"single + Chemifarm", invest:0, investLabel:"Chemify (startup)" },
+  { id:"grzybowski",name:"Grzybowski Group / IBS-CARS",        org:"UNIST + Polish Acad. Sci.",    city:"Ulsan",         country:"Korea",        flag:"\u{1F1F0}\u{1F1F7}", lat:35.54, lon:129.26, tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"none",       ai:"strong",  scale:"IBS center",    invest:0,   investLabel:"Chematica/Synthia" },
+  { id:"burke",     name:"MMLI / Burke Group",                 org:"UIUC",                         city:"Champaign",     country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:40.11, lon:-88.23, tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"partial",    ai:"strong",  scale:"NSF AI Institute", invest:20, investLabel:"$20M+ (NSF)" },
+  { id:"hein",      name:"Hein Lab / Telescope",               org:"UBC",                          city:"Vancouver",     country:"Canada",       flag:"\u{1F1E8}\u{1F1E6}", lat:49.26, lon:-123.25,tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"integrated", ai:"strong",  scale:"single + vendor", invest:0,  investLabel:"Telescope Innovations" },
+  { id:"ley",       name:"Ley Group",                          org:"U Cambridge",                  city:"Cambridge",     country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:52.21, lon:0.12,   tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"integrated", ai:"none",    scale:"single",        invest:0,   investLabel:"Flow + PAT pioneer" },
+  { id:"doyle",     name:"Doyle Group",                        org:"UCLA",                         city:"Los Angeles",   country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:34.07, lon:-118.44,tier:"academic",  domain:"chemistry",      maturity:"operational", charact:"partial",    ai:"strong",  scale:"single + Merck", invest:0,  investLabel:"HTE + ML" },
+  // === SDL Hardware Vendors (added 2026-04-21) ===
+  { id:"hamilton",  name:"Hamilton Company",                   org:"Hamilton",                     city:"Reno",          country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:39.53, lon:-119.81,tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"\u2014",    ai:"none",    scale:"vendor (~$815M rev)", invest:0, investLabel:"Private" },
+  { id:"opentrons", name:"Opentrons",                          org:"Opentrons Labworks",           city:"Brooklyn",      country:"USA",          flag:"\u{1F1FA}\u{1F1F8}", lat:40.69, lon:-73.99, tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"\u2014",    ai:"strong",  scale:"vendor ($1.8B val)", invest:261, investLabel:"$261M raised" },
+  { id:"tecan",     name:"Tecan Group",                        org:"Tecan (SIX: TECN)",            city:"M\u00E4nnedorf",country:"Switzerland",  flag:"\u{1F1E8}\u{1F1ED}", lat:47.25, lon:8.72,   tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"\u2014",    ai:"partial", scale:"vendor (CHF 934M rev)", invest:0, investLabel:"Public (SIX)" },
+  { id:"paa",       name:"Peak Analysis & Automation",         org:"PAA (Grenova)",                city:"Farnborough",   country:"UK",           flag:"\u{1F1EC}\u{1F1E7}", lat:51.28, lon:-0.75,  tier:"commercial",domain:"cross-domain",   maturity:"operational", charact:"\u2014",    ai:"partial", scale:"vendor (~40 staff)", invest:0, investLabel:"Private" },
+];
+
+window.SDL_CATEGORIES = {
+  tier: {
+    label: "Type",
+    options: [
+      { id:"national",   label:"National / Consortium",   color:"oklch(0.78 0.14 85)"  },
+      { id:"academic",   label:"Academic / Institution",  color:"oklch(0.78 0.14 200)" },
+      { id:"commercial", label:"Commercial / Industrial", color:"oklch(0.72 0.18 25)"  },
+      { id:"labos",      label:"Lab OS / Orchestration",  color:"oklch(0.78 0.14 300)" },
+    ]
+  },
+  maturity: {
+    label: "Maturity",
+    options: [
+      { id:"concept",     label:"Concept / Proposal" },
+      { id:"prototype",   label:"Prototype" },
+      { id:"operational", label:"Operational" },
+      { id:"industrial",  label:"Industrial scale" },
+    ]
+  },
+  domain: {
+    label: "Domain",
+    options: [
+      { id:"materials",      label:"Materials" },
+      { id:"chemistry",      label:"Chemistry" },
+      { id:"batteries",      label:"Batteries" },
+      { id:"energy",         label:"Energy / P2X" },
+      { id:"drug-discovery", label:"Drug discovery" },
+      { id:"biology",        label:"Biology" },
+      { id:"cross-domain",   label:"Cross-domain" },
+      { id:"orchestration",  label:"Orchestration" },
+    ]
+  },
+  charact: {
+    label: "Characterisation in Loop",
+    options: [
+      { id:"synthesis-only",      label:"Synthesis only" },
+      { id:"single-technique",    label:"Single technique" },
+      { id:"multi-technique",     label:"Multi-technique" },
+      { id:"advanced-multimodal", label:"Advanced multimodal integrated" },
+    ]
+  },
+};
+</script>
+
+<script>
+(async function(){
+  const CATS = window.SDL_CATEGORIES;
+  const DATA = window.SDL_DATA;
+
+  const worldUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json";
+  const chinaUrl = "https://raw.githubusercontent.com/longwosion/geojson-map-china/master/china.json";
+  const [world, china] = await Promise.all([
+    fetch(worldUrl).then(r => r.json()),
+    fetch(chinaUrl).then(r => r.json()).catch(()=>null),
+  ]);
+  const landFeat = topojson.feature(world, world.objects.land);
+  const countriesFeat = topojson.feature(world, world.objects.countries);
+  const countriesMesh = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
+  const countriesOuter = topojson.mesh(world, world.objects.countries, (a,b) => a === b);
+
+  // State
+  const state = {
+    filters: { tier: new Set(), maturity: new Set(), domain: new Set(), charact: new Set() },
+    hover: null,
+  };
+
+  function tierColor(t){ return getComputedStyle(document.documentElement).getPropertyValue('--c-'+t).trim(); }
+
+  function isMatch(d){
+    for(const k of Object.keys(state.filters)){
+      const s = state.filters[k];
+      if(s.size === 0) continue;
+      if(!s.has(d[k])) return false;
+    }
+    return true;
+  }
+  function anyFilterActive(){
+    return Object.values(state.filters).some(s => s.size>0);
+  }
+
+  function investRadius(inv){
+    if(!inv || inv<=0) return 4.5;
+    return 4 + Math.min(11, Math.sqrt(inv)/3.5);
+  }
+
+  // Build DOM skeleton
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header class="top">
+      <div class="brand">
+        <div class="eyebrow">Landscape Scan \u00B7 compiled Apr 2026</div>
+        <h1>Global Self-Driving Lab <span class="dim">Landscape</span></h1>
+      </div>
+      <div class="counts">
+        <div><span class="n" id="count-total">0</span><span class="lbl">Initiatives</span></div>
+        <div><span class="n" id="count-shown">0</span><span class="lbl">Highlighted</span></div>
+        <div><span class="n" id="count-countries">0</span><span class="lbl">Countries</span></div>
+      </div>
+    </header>
+
+    <aside class="left">
+      <div class="section-h">Type</div>
+      <div class="chips" data-group="tier"></div>
+      <div class="section-h">Maturity</div>
+      <div class="chips" data-group="maturity"></div>
+      <button class="reset-btn" id="reset">Clear all filters</button>
+    </aside>
+
+    <div class="map-wrap" id="map-wrap">
+      <svg id="map" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="zoom-ctl">
+        <button id="z-in"  title="Zoom in">+</button>
+        <button id="z-out" title="Zoom out">\u2212</button>
+        <button id="z-reset" title="Reset view">\u27F2</button>
+      </div>
+      <div class="zoom-hint" id="z-hint">Drag to pan \u00B7 scroll to zoom \u00B7 double-click to zoom in</div>
+      <div class="region-nav">
+        <button id="r-eu" title="Fly to Europe">EU</button>
+        <button id="r-us" title="Fly to United States">US</button>
+        <button id="r-ea" title="Fly to East Asia">EA</button>
+      </div>
+      <div class="tip" id="tip"></div>
+      <div class="filter-callout" id="filter-callout"></div>
+    </div>
+
+    <aside class="right">
+      <div class="section-h">Domain</div>
+      <div class="chips" data-group="domain"></div>
+      <div class="section-h">Characterisation in Loop</div>
+      <div class="chips" data-group="charact"></div>
+    </aside>
+
+    <footer class="bot">
+      <div>DiscoveryLabNL \u00B7 Landscape Matrix v.04.2026</div>
+    </footer>
+  `;
+
+  // Chips
+  function renderChips(group){
+    const host = app.querySelector('.chips[data-group="'+group+'"]');
+    host.innerHTML = '';
+    CATS[group].options.forEach(opt => {
+      const n = DATA.filter(d => d[group] === opt.id).length;
+      const b = document.createElement('button');
+      b.className = 'chip';
+      if(group === 'tier') b.dataset.tier = opt.id;
+      b.dataset.key = opt.id;
+      b.innerHTML = '<span class="dot"'+(opt.color ? ' style="background:'+opt.color+'"' : '')+'></span>'+
+                     '<span class="lbl">'+opt.label+'</span>'+
+                     '<span class="n">'+n+'</span>';
+      b.onclick = () => {
+        const s = state.filters[group];
+        if(s.has(opt.id)) s.delete(opt.id); else s.add(opt.id);
+        render();
+      };
+      host.appendChild(b);
+    });
+  }
+  Object.keys(CATS).forEach(renderChips);
+
+  document.getElementById('reset').onclick = () => {
+    Object.values(state.filters).forEach(s => s.clear());
+    render();
+  };
+
+  // Map projection & base layers (3D globe)
+  const svg = document.getElementById('map');
+  const W = 1000, H = 560;
+  const CX = W/2, CY = H/2 + 8;
+  const BASE_SCALE = Math.min(W, H) * 0.45;
+  const projection = d3.geoOrthographic()
+    .scale(BASE_SCALE)
+    .translate([CX, CY])
+    .clipAngle(90)
+    .rotate([-5, -50]);
+  const path = d3.geoPath(projection);
+
+  const ns = 'http://www.w3.org/2000/svg';
+
+  // Globe backdrop: radial gradient for shaded sphere
+  const defs = document.createElementNS(ns,'defs');
+  defs.innerHTML = '<radialGradient id="globeFill" cx="35%" cy="35%" r="75%">'+
+    '<stop offset="0%"   stop-color="oklch(0.30 0.02 230)"/>'+
+    '<stop offset="60%"  stop-color="oklch(0.22 0.015 240)"/>'+
+    '<stop offset="100%" stop-color="oklch(0.14 0.01 240)"/>'+
+    '</radialGradient>'+
+    '<radialGradient id="globeHilite" cx="30%" cy="25%" r="55%">'+
+    '<stop offset="0%"   stop-color="oklch(0.85 0.05 230 / 0.18)"/>'+
+    '<stop offset="100%" stop-color="oklch(0.85 0.05 230 / 0)"/>'+
+    '</radialGradient>'+
+    '<filter id="atmosphere" x="-20%" y="-20%" width="140%" height="140%">'+
+    '<feGaussianBlur stdDeviation="6"/>'+
+    '</filter>';
+  svg.appendChild(defs);
+
+  const gGlobe   = document.createElementNS(ns,'g');
+  const gGrat    = document.createElementNS(ns,'g');
+  const gLand    = document.createElementNS(ns,'g');
+  const gMarkers = document.createElementNS(ns,'g');
+  const gLabels  = document.createElementNS(ns,'g');
+  svg.append(gGlobe, gGrat, gLand, gMarkers, gLabels);
+
+  // Atmosphere halo
+  const atmos = document.createElementNS(ns,'circle');
+  atmos.setAttribute('cx', CX); atmos.setAttribute('cy', CY);
+  atmos.setAttribute('class','atmosphere');
+  gGlobe.appendChild(atmos);
+
+  // Sphere fill (shaded water)
+  const sphereFill = document.createElementNS(ns,'circle');
+  sphereFill.setAttribute('cx', CX); sphereFill.setAttribute('cy', CY);
+  sphereFill.setAttribute('class','sphere-fill');
+  gGlobe.appendChild(sphereFill);
+
+  // Sphere outline
+  const sphereLine = document.createElementNS(ns,'path');
+  sphereLine.setAttribute('class','sphere');
+  gGlobe.appendChild(sphereLine);
+
+  // Specular highlight
+  const spec = document.createElementNS(ns,'circle');
+  spec.setAttribute('cx', CX); spec.setAttribute('cy', CY);
+  spec.setAttribute('class','specular');
+  gGlobe.appendChild(spec);
+
+  // Graticule
+  const gratGen = d3.geoGraticule().step([15,15]);
+  const gratPath = document.createElementNS(ns,'path');
+  gratPath.setAttribute('class','graticule');
+  gGrat.appendChild(gratPath);
+
+  // Land
+  const landPath = document.createElementNS(ns,'path');
+  landPath.setAttribute('class','land');
+  gLand.appendChild(landPath);
+
+  // Country internal borders
+  const bordersPath = document.createElementNS(ns,'path');
+  bordersPath.setAttribute('class','borders');
+  gLand.appendChild(bordersPath);
+
+  // Country outer edges
+  const outerPath = document.createElementNS(ns,'path');
+  outerPath.setAttribute('class','borders-outer');
+  gLand.appendChild(outerPath);
+
+  // China provinces
+  let chinaProvPath = null;
+  if(china && china.features){
+    chinaProvPath = document.createElementNS(ns,'path');
+    chinaProvPath.setAttribute('class','provinces');
+    gLand.appendChild(chinaProvPath);
+  }
+
+  // Labels: countries + China provinces
+  const countryLabels = [];
+  countriesFeat.features.forEach(f => {
+    const name = f.properties?.name;
+    if(!name) return;
+    const c = d3.geoCentroid(f);
+    const area = d3.geoArea(f);
+    countryLabels.push({ name, coord: c, area });
+  });
+  countryLabels.sort((a,b)=>b.area-a.area);
+
+  const provinceLabels = [];
+  const PROV_EN = {
+    "\u5317\u4EAC\u5E02":"Beijing","\u5929\u6D25\u5E02":"Tianjin","\u6CB3\u5317\u7701":"Hebei","\u5C71\u897F\u7701":"Shanxi","\u5185\u8499\u53E4\u81EA\u6CBB\u533A":"Inner Mongolia",
+    "\u8FBD\u5B81\u7701":"Liaoning","\u5409\u6797\u7701":"Jilin","\u9ED1\u9F99\u6C5F\u7701":"Heilongjiang","\u4E0A\u6D77\u5E02":"Shanghai","\u6C5F\u82CF\u7701":"Jiangsu",
+    "\u6D59\u6C5F\u7701":"Zhejiang","\u5B89\u5FBD\u7701":"Anhui","\u798F\u5EFA\u7701":"Fujian","\u6C5F\u897F\u7701":"Jiangxi","\u5C71\u4E1C\u7701":"Shandong",
+    "\u6CB3\u5357\u7701":"Henan","\u6E56\u5317\u7701":"Hubei","\u6E56\u5357\u7701":"Hunan","\u5E7F\u4E1C\u7701":"Guangdong","\u5E7F\u897F\u58EE\u65CF\u81EA\u6CBB\u533A":"Guangxi",
+    "\u6D77\u5357\u7701":"Hainan","\u91CD\u5E86\u5E02":"Chongqing","\u56DB\u5DDD\u7701":"Sichuan","\u8D35\u5DDE\u7701":"Guizhou","\u4E91\u5357\u7701":"Yunnan",
+    "\u897F\u85CF\u81EA\u6CBB\u533A":"Tibet","\u9655\u897F\u7701":"Shaanxi","\u7518\u8083\u7701":"Gansu","\u9752\u6D77\u7701":"Qinghai","\u5B81\u590F\u56DE\u65CF\u81EA\u6CBB\u533A":"Ningxia",
+    "\u65B0\u7586\u7EF4\u543E\u5C14\u81EA\u6CBB\u533A":"Xinjiang","\u53F0\u6E7E\u7701":"Taiwan","\u9999\u6E2F\u7279\u522B\u884C\u653F\u533A":"Hong Kong","\u6FB3\u95E8\u7279\u522B\u884C\u653F\u533A":"Macau"
+  };
+  if(china && china.features){
+    china.features.forEach(f => {
+      const zh = f.properties?.name;
+      if(!zh) return;
+      const en = PROV_EN[zh] || zh;
+      const c = d3.geoCentroid(f);
+      provinceLabels.push({ name: en, coord: c });
+    });
+  }
+
+  function mkLabel(cls, t){
+    const el = document.createElementNS(ns,'text');
+    el.setAttribute('class', cls);
+    el.setAttribute('text-anchor','middle');
+    el.textContent = t;
+    return el;
+  }
+  const KEY_COUNTRIES = new Set([
+    "United States of America","Canada","United Kingdom","Germany","France","Netherlands",
+    "Switzerland","Denmark","Sweden","Japan","China","South Korea","India","Brazil",
+    "Russia","Australia","Mexico","Spain","Italy","Norway","Poland"
+  ]);
+  const DISPLAY_NAME = {
+    "United States of America":"USA",
+    "United Kingdom":"UK",
+    "South Korea":"S. Korea",
+  };
+  countryLabels.forEach((l, idx) => {
+    const display = DISPLAY_NAME[l.name] || l.name;
+    const el = mkLabel('country-label', display.toUpperCase());
+    if(KEY_COUNTRIES.has(l.name)) el.dataset.tier = '1';
+    else if(idx < 60) el.dataset.tier = '2';
+    else el.dataset.tier = '3';
+    gLabels.appendChild(el);
+    l._el = el;
+  });
+  provinceLabels.forEach(l => {
+    const el = mkLabel('province-label', l.name);
+    gLabels.appendChild(el);
+    l._el = el;
+  });
+
+  // Markers with de-duplicate jitter
+  const locKey = d => d.lat.toFixed(1)+'|'+d.lon.toFixed(1);
+  const mgroups = {};
+  DATA.forEach(d => { (mgroups[locKey(d)] ||= []).push(d); });
+  DATA.forEach(d => {
+    const bucket = mgroups[locKey(d)];
+    if(bucket.length > 1){
+      const idx = bucket.indexOf(d);
+      const angle = (idx / bucket.length) * Math.PI * 2;
+      const r = 6;
+      d._off = [Math.cos(angle)*r, Math.sin(angle)*r];
+    } else d._off = [0,0];
+  });
+
+  const tip = document.getElementById('tip');
+
+  DATA.forEach(d => {
+    const g = document.createElementNS(ns,'g');
+    g.setAttribute('class','marker');
+    g.style.color = 'var(--c-'+d.tier+')';
+    d._el = g;
+
+    const inner = document.createElementNS(ns,'g');
+    inner.setAttribute('class','m-inner');
+    g.appendChild(inner);
+
+    const pulse = document.createElementNS(ns,'circle');
+    pulse.setAttribute('class','pulse');
+    inner.appendChild(pulse);
+
+    const ring = document.createElementNS(ns,'circle');
+    ring.setAttribute('class','ring');
+    ring.setAttribute('r', investRadius(d.invest) + 2.5);
+    inner.appendChild(ring);
+
+    const core = document.createElementNS(ns,'circle');
+    core.setAttribute('class','core');
+    core.setAttribute('r', investRadius(d.invest));
+    inner.appendChild(core);
+
+    g.addEventListener('mouseenter', e => showTip(d, e));
+    g.addEventListener('mousemove', e => moveTip(e));
+    g.addEventListener('mouseleave', () => hideTip());
+
+    gMarkers.appendChild(g);
+  });
+
+  function showTip(d, e){
+    const tierLabel = CATS.tier.options.find(o=>o.id===d.tier).label;
+    const matLabel  = CATS.maturity.options.find(o=>o.id===d.maturity)?.label || d.maturity;
+    const domLabel  = CATS.domain.options.find(o=>o.id===d.domain)?.label || d.domain;
+    const chLabel   = CATS.charact.options.find(o=>o.id===d.charact)?.label || d.charact;
+    tip.innerHTML =
+      '<div class="t-head">'+
+        '<span class="t-dot" style="background:var(--c-'+d.tier+')"></span>'+
+        '<span class="t-name">'+d.name+'</span>'+
+      '</div>'+
+      '<div class="t-meta">'+d.flag+' &nbsp; '+d.city+', '+d.country+' &nbsp;\u00B7&nbsp; '+tierLabel+'</div>'+
+      '<div class="t-row"><span class="k">Domain</span><span class="v">'+domLabel+'</span></div>'+
+      '<div class="t-row"><span class="k">Maturity</span><span class="v">'+matLabel+'</span></div>'+
+      '<div class="t-row"><span class="k">Charact.</span><span class="v">'+chLabel+'</span></div>'+
+      '<div class="t-row"><span class="k">Scale</span><span class="v">'+d.scale+'</span></div>'+
+      '<div class="t-row"><span class="k">Investment</span><span class="v">'+d.investLabel+'</span></div>'+
+      '<div class="t-row"><span class="k">Org</span><span class="v">'+d.org+'</span></div>';
+    tip.classList.add('show');
+    moveTip(e);
+  }
+  function moveTip(e){
+    const wrap = document.getElementById('map-wrap').getBoundingClientRect();
+    const x = e.clientX - wrap.left + 14;
+    const y = e.clientY - wrap.top + 14;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    tip.style.left = Math.min(x, wrap.width - tw - 10) + 'px';
+    tip.style.top  = Math.min(y, wrap.height - th - 10) + 'px';
+  }
+  function hideTip(){ tip.classList.remove('show'); }
+
+  // Right list
+  const rightAside = app.querySelector('aside.right');
+  const listH = document.createElement('div');
+  listH.className = 'section-h';
+  listH.textContent = 'Highlighted';
+  listH.id = 'list-h';
+  const list = document.createElement('div');
+  list.className = 'list';
+  list.id = 'list';
+  rightAside.append(listH, list);
+
+  function renderList(){
+    const matches = anyFilterActive() ? DATA.filter(isMatch) : [];
+    list.innerHTML = '';
+    if(!anyFilterActive()){
+      list.innerHTML = '<div class="empty">Select filters to highlight<br/>matching initiatives.</div>';
+      return;
+    }
+    if(matches.length === 0){
+      list.innerHTML = '<div class="empty">No initiatives match<br/>current filter combination.</div>';
+      return;
+    }
+    matches
+      .sort((a,b)=> (b.invest||0) - (a.invest||0))
+      .forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.innerHTML =
+          '<span class="ldot" style="background:var(--c-'+d.tier+')"></span>'+
+          '<div>'+
+            '<div class="lname">'+d.name+'</div>'+
+            '<div class="lmeta">'+d.city+' \u00B7 '+(CATS.domain.options.find(o=>o.id===d.domain)?.label || d.domain)+'</div>'+
+          '</div>'+
+          '<span class="lcountry">'+d.flag+'</span>';
+        row.onmouseenter = () => {
+          const e = { clientX: d._x + document.getElementById('map-wrap').getBoundingClientRect().left,
+                      clientY: d._y + document.getElementById('map-wrap').getBoundingClientRect().top };
+          showTip(d, e);
+        };
+        row.onmouseleave = hideTip;
+        list.appendChild(row);
+      });
+  }
+
+  // Render / filter application
+  function render(){
+    Object.keys(CATS).forEach(group => {
+      const host = app.querySelector('.chips[data-group="'+group+'"]');
+      host.querySelectorAll('.chip').forEach(btn => {
+        const k = btn.dataset.key;
+        btn.classList.toggle('active', state.filters[group].has(k));
+        const simulated = DATA.filter(d => {
+          for(const gk of Object.keys(state.filters)){
+            const s = state.filters[gk];
+            if(gk === group){
+              if(s.size === 0){
+                if(d[gk] !== k) return false;
+              } else {
+                const sim = new Set(s); sim.add(k);
+                if(!sim.has(d[gk])) return false;
+              }
+            } else {
+              if(s.size > 0 && !s.has(d[gk])) return false;
+            }
+          }
+          return true;
+        }).length;
+        btn.querySelector('.n').textContent = simulated;
+        btn.classList.toggle('dim', simulated === 0);
+      });
+    });
+
+    const active = anyFilterActive();
+    svg.classList.toggle('filtering', active);
+    let shown = 0;
+    const countryset = new Set();
+    DATA.forEach(d => {
+      const match = isMatch(d);
+      if(match) shown++;
+      if(!active || match) countryset.add(d.country);
+      d._el.classList.toggle('dim', active && !match);
+      d._el.classList.toggle('hl',  active && match);
+      // Scale up highlighted marker circles (no CSS transform to avoid drift)
+      const baseR = investRadius(d.invest);
+      const hl = active && match;
+      d._el.querySelector('.core').setAttribute('r', hl ? baseR * 1.5 : baseR);
+      d._el.querySelector('.ring').setAttribute('r', hl ? (baseR + 2.5) * 1.5 : baseR + 2.5);
+    });
+
+    document.getElementById('count-total').textContent = DATA.length;
+    document.getElementById('count-shown').textContent = active ? shown : DATA.length;
+    document.getElementById('count-countries').textContent = countryset.size;
+
+    renderList();
+    redraw();          // refresh inline opacity so dim/hl takes effect immediately
+
+    // Contextual callout for specific filters
+    const callout = document.getElementById('filter-callout');
+    const CALLOUTS = {
+      'synthesis-only': 'AI designs, robots synthesise \u2014 but <strong>no measurement closes the loop</strong>. Discovery relies on computation alone.',
+      'single-technique': 'One analytical method in the loop \u2014 typically <strong>XRD, UV-Vis, or NMR</strong>. Enough to verify, not enough to understand.',
+      'multi-technique': 'Multiple benchtop instruments (HPLC, MS, Raman, DLS) \u2014 <strong>breadth without depth</strong>. No large-facility or advanced imaging.',
+      'advanced-multimodal': 'Synchrotron X-ray only. <strong>No SDL integrates electron microscopy, mechanical testing, or custom hardware</strong> \u2014 the DiscoveryLabNL gap.',
+    };
+    let calloutHTML = '';
+    for (const [key, msg] of Object.entries(CALLOUTS)) {
+      if (state.filters.charact.has(key)) { calloutHTML = msg; break; }
+    }
+    if (calloutHTML) {
+      callout.innerHTML = calloutHTML;
+      callout.classList.add('visible');
+      // Position within the visible portion of the map
+      const wrapRect = svg.parentElement.getBoundingClientRect();
+      const viewportBottom = window.innerHeight;
+      const visibleBottom = Math.min(wrapRect.bottom, viewportBottom) - wrapRect.top;
+      callout.style.top = Math.max(200, visibleBottom - 60) + 'px';
+    } else {
+      callout.classList.remove('visible');
+    }
+  }
+
+  // Globe rotate + zoom
+  const view = {
+    scale: BASE_SCALE * 5.5,
+    rotate: [-5, -50, 0],
+    min: BASE_SCALE,
+    max: BASE_SCALE * 12,
+  };
+  const zHint = document.getElementById('z-hint');
+
+  function gcDist(a, b){
+    const [la1, ph1] = a.map(d => d*Math.PI/180);
+    const [la2, ph2] = b.map(d => d*Math.PI/180);
+    const dl = la2 - la1;
+    const cos = Math.sin(ph1)*Math.sin(ph2) + Math.cos(ph1)*Math.cos(ph2)*Math.cos(dl);
+    return Math.acos(Math.max(-1,Math.min(1,cos))) * 180/Math.PI;
+  }
+
+  function redraw(){
+    projection.scale(view.scale).rotate(view.rotate);
+    const k = view.scale / BASE_SCALE;
+
+    const r = view.scale;
+    sphereFill.setAttribute('r', r);
+    sphereFill.setAttribute('fill', 'url(#globeFill)');
+    spec.setAttribute('r', r);
+    spec.setAttribute('fill', 'url(#globeHilite)');
+    atmos.setAttribute('r', r + 18);
+    atmos.setAttribute('fill', 'oklch(0.55 0.10 240 / 0.18)');
+    atmos.setAttribute('filter', 'url(#atmosphere)');
+    sphereLine.setAttribute('d', path({type:'Sphere'}));
+
+    gratPath.setAttribute('d', path(gratGen()));
+    landPath.setAttribute('d', path(landFeat));
+    bordersPath.setAttribute('d', path(countriesMesh));
+    outerPath.setAttribute('d', path(countriesOuter));
+    if(chinaProvPath && china){
+      chinaProvPath.setAttribute('d', path({type:'FeatureCollection', features: china.features}));
+      chinaProvPath.style.opacity = (k >= 2.2) ? '1' : '0';
+    }
+
+    const center = [-view.rotate[0], -view.rotate[1]];
+
+    DATA.forEach(d => {
+      const p = projection([d.lon, d.lat]);
+      const dist = gcDist(center, [d.lon, d.lat]);
+      const visible = dist < 88 && p;
+      if(visible){
+        const x = p[0] + d._off[0];
+        const y = p[1] + d._off[1];
+        d._el.style.display = '';
+        d._el.setAttribute('transform', 'translate('+x+','+y+')');
+        const limbFade = Math.min(1, Math.max(0, (88 - dist)/20));
+        // Respect dim/hl class — dim markers get much lower opacity
+        const isDim = d._el.classList.contains('dim');
+        d._el.style.opacity = isDim ? limbFade * 0.08 : limbFade;
+        d._x = x; d._y = y;
+        d._el.querySelector('.m-inner').removeAttribute('transform');
+      } else {
+        d._el.style.display = 'none';
+      }
+    });
+
+    gLabels.querySelectorAll('.country-label, .province-label').forEach(el => el.style.display = 'none');
+    countryLabels.forEach(l => {
+      const dist = gcDist(center, l.coord);
+      if(dist >= 78){ return; }
+      const tier = l._el.dataset.tier;
+      const show = (tier === '1' && k >= 1.0) ||
+                   (tier === '2' && k >= 1.8) ||
+                   (tier === '3' && k >= 3.0);
+      if(!show) return;
+      const p = projection(l.coord);
+      if(!p) return;
+      l._el.style.display = '';
+      l._el.setAttribute('x', p[0]);
+      l._el.setAttribute('y', p[1]);
+      l._el.style.opacity = '1';
+    });
+    if(k >= 3.5){
+      provinceLabels.forEach(l => {
+        const dist = gcDist(center, l.coord);
+        if(dist >= 60) return;
+        const p = projection(l.coord);
+        if(!p) return;
+        l._el.style.display = '';
+        l._el.setAttribute('x', p[0]);
+        l._el.setAttribute('y', p[1]);
+        l._el.style.opacity = '1';
+      });
+    }
+  }
+
+  function clampScale(s){ return Math.max(view.min, Math.min(view.max, s)); }
+
+  function zoomBy(factor){
+    view.scale = clampScale(view.scale * factor);
+    redraw();
+  }
+
+  // Drag to rotate
+  let dragging = null;
+  svg.addEventListener('pointerdown', (e) => {
+    if(e.target.closest('.marker')) return;
+    dragging = { x: e.clientX, y: e.clientY, r: [...view.rotate] };
+    svg.setPointerCapture(e.pointerId);
+    svg.style.cursor = 'grabbing';
+    zHint.classList.add('fade');
+  });
+  svg.addEventListener('pointermove', (e) => {
+    if(!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    const dx = (e.clientX - dragging.x) * (1000 / rect.width);
+    const dy = (e.clientY - dragging.y) * (560 / rect.height);
+    const k = view.scale / BASE_SCALE;
+    const sens = 0.25 / k;
+    view.rotate[0] = dragging.r[0] + dx * sens;
+    view.rotate[1] = Math.max(-89, Math.min(89, dragging.r[1] - dy * sens));
+    redraw();
+  });
+  function endDrag(e){
+    if(!dragging) return;
+    dragging = null;
+    svg.style.cursor = 'grab';
+    try{ svg.releasePointerCapture(e.pointerId); }catch(_){}
+  }
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+  svg.addEventListener('pointerleave', endDrag);
+
+  // Wheel to zoom
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoomBy(Math.exp(-e.deltaY * 0.0015));
+    zHint.classList.add('fade');
+  }, { passive: false });
+
+  // Double-click to zoom in toward clicked point
+  svg.addEventListener('dblclick', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const sx = (e.clientX - rect.left) * (1000 / rect.width);
+    const sy = (e.clientY - rect.top) * (560 / rect.height);
+    const inv = projection.invert && projection.invert([sx, sy]);
+    if(inv){
+      view.rotate[0] = -inv[0];
+      view.rotate[1] = -inv[1];
+    }
+    zoomBy(1.8);
+    zHint.classList.add('fade');
+  });
+
+  // Animated flyTo — zoom-out arc then zoom-in to destination
+  const REGIONS = {
+    eu: { rotate: [-5, -50, 0], scale: BASE_SCALE * 5.5 },
+    us: { rotate: [95, -40, 0],  scale: BASE_SCALE * 4.0 },
+    ea: { rotate: [-120, -35, 0], scale: BASE_SCALE * 4.0 },
+  };
+
+  let flyAnim = null;
+  function flyTo(region) {
+    const target = REGIONS[region];
+    if (!target) return;
+    if (flyAnim) cancelAnimationFrame(flyAnim);
+
+    const start = { rotate: [...view.rotate], scale: view.scale };
+    const t0 = performance.now();
+
+    // Compute angular distance to decide if we need the zoom-out arc
+    const dLon = Math.abs(target.rotate[0] - start.rotate[0]);
+    const dLat = Math.abs(target.rotate[1] - start.rotate[1]);
+    const angularDist = Math.sqrt(dLon * dLon + dLat * dLat);
+    const needsArc = angularDist > 20; // significant rotation → zoom out first
+
+    // Zoom-out trough: pull back to global view mid-flight
+    const midScale = needsArc ? BASE_SCALE * 1.0 : (start.scale + target.scale) / 2;
+    const duration = needsArc ? 1400 : 800; // longer for cross-globe flights
+
+    // Highlight active button
+    document.querySelectorAll('.region-nav button').forEach(b => b.classList.remove('active-region'));
+    const btn = document.getElementById('r-' + region);
+    if (btn) btn.classList.add('active-region');
+    zHint.classList.add('fade');
+
+    function step(now) {
+      const t = Math.min(1, (now - t0) / duration);
+      // Ease in-out cubic for rotation
+      const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      // Rotation: smooth interpolation
+      view.rotate[0] = start.rotate[0] + (target.rotate[0] - start.rotate[0]) * e;
+      view.rotate[1] = start.rotate[1] + (target.rotate[1] - start.rotate[1]) * e;
+      view.rotate[2] = start.rotate[2] + ((target.rotate[2] || 0) - start.rotate[2]) * e;
+
+      // Scale: parabolic arc — dip to midScale at t=0.5, arrive at target.scale at t=1
+      // s(t) = (1-t)^2 * start + 2*(1-t)*t * mid + t^2 * target  (quadratic Bezier)
+      const s0 = start.scale, s1 = midScale, s2 = target.scale;
+      const oneMinusT = 1 - t;
+      view.scale = oneMinusT * oneMinusT * s0 + 2 * oneMinusT * t * s1 + t * t * s2;
+
+      redraw();
+
+      if (t < 1) flyAnim = requestAnimationFrame(step);
+      else flyAnim = null;
+    }
+    flyAnim = requestAnimationFrame(step);
+  }
+
+  // Region buttons
+  document.getElementById('r-eu').onclick = () => flyTo('eu');
+  document.getElementById('r-us').onclick = () => flyTo('us');
+  document.getElementById('r-ea').onclick = () => flyTo('ea');
+
+  // Buttons
+  document.getElementById('z-in').onclick  = () => { zoomBy(1.6); zHint.classList.add('fade'); };
+  document.getElementById('z-out').onclick = () => { zoomBy(1/1.6); };
+  document.getElementById('z-reset').onclick = () => { flyTo('eu'); };
+
+  // Keyboard
+  window.addEventListener('keydown', (e) => {
+    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if(e.key === '+' || e.key === '=') zoomBy(1.4);
+    else if(e.key === '-' || e.key === '_') zoomBy(1/1.4);
+    else if(e.key === '0'){ flyTo('eu'); }
+    else if(e.key === 'ArrowLeft')  { view.rotate[0] -= 10; redraw(); }
+    else if(e.key === 'ArrowRight') { view.rotate[0] += 10; redraw(); }
+    else if(e.key === 'ArrowUp')    { view.rotate[1] = Math.min(89, view.rotate[1] + 10); redraw(); }
+    else if(e.key === 'ArrowDown')  { view.rotate[1] = Math.max(-89, view.rotate[1] - 10); redraw(); }
+  });
+
+  svg.style.cursor = 'grab';
+  redraw();
+  render();
+})();
+</script>
+</body>
+</html>
