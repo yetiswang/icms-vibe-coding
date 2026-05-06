@@ -270,5 +270,40 @@ function registerTypewriter(sceneEl, lines) {
   return tw;
 }
 
+const scene6 = scenes.find(s => s.dataset.scene === '6');
+if (scene6) {
+  registerTypewriter(scene6, [
+    { segments: [
+      { text: '$ ', cls: 'term-prompt' },
+      { text: 'claude', cls: 'term-user' },
+    ]},
+    { segments: [
+      { text: '> ', cls: 'term-prompt' },
+      { text: 'read everything in My Templates and tell me my visual style', cls: 'term-user' },
+    ]},
+    { segments: [
+      { text: 'scanning ', cls: 'term-out' },
+      { text: 'My Templates/', cls: 'term-key' },
+      { text: ' ... 18 files', cls: 'term-out' },
+    ]},
+    { segments: [
+      { text: 'palette: ', cls: 'term-out' },
+      { text: 'TU/e Red #C8102E', cls: 'term-key' },
+      { text: ', dark #1E1E28, light #F5F5F8', cls: 'term-out' },
+    ]},
+    { segments: [
+      { text: 'font: ', cls: 'term-out' },
+      { text: 'Avenir Next LT Pro', cls: 'term-key' },
+      { text: ' (4 weights)', cls: 'term-out' },
+    ]},
+    { segments: [
+      { text: 'recurring motif: ', cls: 'term-out' },
+      { text: 'concentric red rings', cls: 'term-key' },
+      { text: ' on dark band', cls: 'term-out' },
+    ]},
+    { segments: [{ text: '✓ done in 4.1s', cls: 'term-ok' }]},
+  ]);
+}
+
 // expose for console testing
 window.deck = { state, advance, retreat, scenes, render, registerTypewriter };
