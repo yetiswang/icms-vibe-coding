@@ -1157,3 +1157,37 @@ body {
   color: rgba(255,255,255,0.4);
   font-family: var(--font-mono);
 }
+
+/* Scene 4 enhancements: setup line, icon column, tagline */
+.scene-vs .vs-setup {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  font-style: italic;
+  margin: 0.4rem 0 1.6rem;
+  max-width: 70ch;
+}
+.scene-vs .vs-icon {
+  display: inline-block;
+  width: 1.6em;
+  margin-right: 0.6rem;
+  text-align: center;
+  font-size: 1.05em;
+}
+.scene-vs .vs-col-right .vs-line {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.scene-vs .vs-tagline {
+  margin-top: 1.6rem;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  font-weight: 400;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0;
+  max-width: none;
+}
+.scene-vs .vs-tagline em {
+  color: var(--tue-red);
+  font-style: normal;
+  font-weight: 700;
+}

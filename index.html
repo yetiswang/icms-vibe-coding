@@ -77,27 +77,33 @@
       </div>
     </section>
 
-    <!-- Scene 4: Chatbot vs CLI — answer to slide 3 -->
-    <section class="scene scene-vs" data-scene="4" data-beats="7" data-act="2">
+    <!-- Scene 4: Chatbot vs CLI — answer to slide 3, with setup + tagline + icons -->
+    <section class="scene scene-vs" data-scene="4" data-beats="9" data-act="2">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="eyebrow">Act 2 · Scene 4</div>
-      <h2 class="title">Because the chat bubble is<br>missing a <em>harness</em> that touches your machine.</h2>
+      <h2 class="title">Because the chat bubble is missing<br>a <em>harness</em> that touches your machine.</h2>
+      <p class="vs-setup" data-beat="1">
+        Same Claude. Same question. The difference is what is built around it.
+      </p>
       <div class="vs-split">
-        <div class="vs-col" data-beat="1">
-          <div class="vs-label">Chatbot</div>
-          <div class="vs-line">→ types replies</div>
-          <div class="vs-line">→ lives in a window</div>
+        <div class="vs-col" data-beat="2">
+          <div class="vs-label">Chatbot in a browser tab</div>
+          <div class="vs-line">→ types a reply</div>
+          <div class="vs-line">→ lives inside a window</div>
           <div class="vs-line">→ stops at the message</div>
         </div>
-        <div class="vs-divider" data-beat="2"></div>
-        <div class="vs-col vs-col-right" data-beat="3">
-          <div class="vs-label">Claude Code (with harness)</div>
-          <div class="vs-line" data-beat="4"><span class="vs-dot"></span>reads your files</div>
-          <div class="vs-line" data-beat="5"><span class="vs-dot"></span>runs commands</div>
-          <div class="vs-line" data-beat="6"><span class="vs-dot"></span>commits to git</div>
-          <div class="vs-line" data-beat="7"><span class="vs-dot"></span>opens the browser</div>
+        <div class="vs-divider" data-beat="3"></div>
+        <div class="vs-col vs-col-right" data-beat="4">
+          <div class="vs-label">Claude Code, with a harness</div>
+          <div class="vs-line" data-beat="5"><span class="vs-icon">📁</span>reads your files</div>
+          <div class="vs-line" data-beat="6"><span class="vs-icon">🛠</span>runs steps on your machine</div>
+          <div class="vs-line" data-beat="7"><span class="vs-icon">💾</span>saves a snapshot you can undo</div>
+          <div class="vs-line" data-beat="8"><span class="vs-icon">🌐</span>opens a browser to check results</div>
         </div>
       </div>
+      <p class="vs-tagline" data-beat="9">
+        A chatbot helps you <em>think</em>. A harness helps you <em>finish</em>.
+      </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
         <span class="scene-counter"></span>
@@ -124,8 +130,8 @@
         <div class="harness-card" data-beat="3">
           <div class="harness-icon">🔁</div>
           <div class="harness-name">Loops</div>
-          <div class="harness-desc">It runs a step, reads the output, decides what to do next, runs again.</div>
-          <div class="harness-detail">A bug pops up; it tries a fix. The build fails; it reads the log and retries.</div>
+          <div class="harness-desc">It runs a step, reads what came back, decides what to do next, runs again.</div>
+          <div class="harness-detail">Something doesn't work? It reads the error message and tries a different way.</div>
         </div>
       </div>
       <p class="caption muted" data-beat="4" style="margin-top: 1.2rem;">
@@ -165,7 +171,7 @@
         <iframe src="embedded/dlnl/index.html" title="discoveryLabNL briefing site — live rings" loading="lazy"></iframe>
       </div>
       <p class="caption muted" data-beat="2">
-        Animated SVG, three concentric rings, hand-typed in CSS. Scroll the frame; click around. It's the live site.
+        Three animated rings, hand-typed in code. Scroll, click around. This is the live website.
       </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -188,8 +194,8 @@
         <div class="workflow-step" data-beat="2">
           <div class="workflow-num">02</div>
           <div class="workflow-name">Repo</div>
-          <div class="workflow-desc">Make a GitHub repo. Init, commit, push.<br>One command, one source of truth.</div>
-          <div class="workflow-detail">Versioned, shareable, auto-deployable to GitHub Pages. Every change is a commit you can roll back.</div>
+          <div class="workflow-desc">Make a place online to keep the work.<br>Tracked. Shareable. One click to publish.</div>
+          <div class="workflow-detail">Every change is a snapshot you can return to. The site goes live with a button. No design tools, no upload step.</div>
         </div>
         <div class="workflow-arrow" data-beat="3"></div>
         <div class="workflow-step" data-beat="3">
@@ -207,7 +213,7 @@
 
     <!-- Scene 9: Simulated CLI #2 — meta moment -->
     <section class="scene scene-cli-2" data-scene="9" data-beats="1" data-act="3">
-      <div class="eyebrow">Act 3 · Scene 9 · The meta moment</div>
+      <div class="eyebrow">Act 3 · Scene 9 · The same trick, on this slide deck</div>
       <h2 class="title">"Build me <em>this deck</em>."</h2>
       <div class="terminal">
         <div class="titlebar">
@@ -250,7 +256,7 @@
         <iframe src="embedded/lsri/presentation.html" title="LSRI presentation — pillars and loops" loading="lazy"></iframe>
       </div>
       <p class="caption muted" data-beat="2">
-        Use arrow keys inside the frame to advance to the loops slide. Animated SVG, no slide-deck software involved.
+        Use arrow keys to advance through the slides. Animated graphics, no PowerPoint involved.
       </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -266,7 +272,7 @@
         <iframe src="embedded/lsri/sdl-map.html" title="SDL global map" loading="lazy"></iframe>
       </div>
       <p class="caption muted" data-beat="2">
-        Self-driving labs across the world. Hover, click, filter. Built in an afternoon with d3.
+        Self-driving labs across the world. Hover, click, filter. Built in an afternoon.
       </p>
       <div class="footer-strip">
         <span>ICMS · TU/e · vibe-coding</span>
@@ -303,17 +309,17 @@
         <div class="brain-step" data-beat="2">
           <div class="brain-step-num">02</div>
           <div class="brain-step-name">Link</div>
-          <div class="brain-step-desc">Wikilinks tie ideas together. Tags, backlinks, the graph view. A wiki of your own thinking emerges over time.</div>
+          <div class="brain-step-desc">Internal links tie related ideas together. Tags, mentions, an evolving diagram of your thinking emerges over time.</div>
         </div>
         <div class="brain-step" data-beat="3">
           <div class="brain-step-num">03</div>
-          <div class="brain-step-name">Query</div>
-          <div class="brain-step-desc">Claude reads the vault as context. Answers grounded in what you've already written. Your wiki, your voice, your domain.</div>
+          <div class="brain-step-name">Ask</div>
+          <div class="brain-step-desc">Claude reads your notes as background. Answers come grounded in what you've already written. Your knowledge, in your voice.</div>
         </div>
       </div>
       <p class="caption" data-beat="4">
         AI is only as good as the <em>context</em> you give it.<br>
-        Markdown is the lingua franca. Your notes become a <em>tool</em> the AI can read.
+        Plain-text notes are a universal language. Your second brain becomes something the AI can read.
       </p>
       <p class="brain-credit" data-beat="5">
         Inspired by Andrej Karpathy's writings on personal AI knowledge systems. <span class="muted-inline">I keep a vault myself, won't show its contents (privacy), happy to chat one-on-one.</span>
@@ -355,9 +361,9 @@
           <div class="path-label">What's next</div>
           <div class="path-name">The lab as second brain</div>
           <ul class="path-list">
-            <li>Local LLM with the lab's memory</li>
-            <li>Software harness (files, repos, docs)</li>
-            <li>Hardware harness (instruments, ELN)</li>
+            <li>A local AI assistant trained on the lab's own memory</li>
+            <li>Software harness — files, projects, documents</li>
+            <li>Hardware harness — instruments, electronic lab notebook</li>
           </ul>
           <div class="path-cost">Not on the market yet</div>
           <div class="path-note">A direction we get to build. The intelligent lab as a working assistant, not a chatbot.</div>
@@ -378,7 +384,7 @@
           <span class="impact-num">01</span>
           <div class="impact-text">
             <span class="impact-headline">Briefings, one-pagers, posters in <em>hours</em>, not days.</span>
-            <span class="impact-sub">Templates already exist in the vault. Claude reuses them, you review the diff.</span>
+            <span class="impact-sub">Templates already exist in our archive. Claude reuses them. You review the changes.</span>
           </div>
         </li>
         <li data-beat="2">
