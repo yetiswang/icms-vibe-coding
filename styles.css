@@ -2362,7 +2362,9 @@ body::after {
   mix-blend-mode: multiply;
 }
 
-/* Disable on mobile: overhead isn't worth it on phones */
+/* Mobile keeps the CRT grain — slightly larger spacing so it doesn't moiré on retina */
 @media (max-width: 600px) {
-  body::after { display: none; }
+  body::after {
+    background-size: 5px 5px, 7px 7px;
+  }
 }
