@@ -783,17 +783,18 @@ body {
   margin: 0.4rem 0 1.2rem;
 }
 
-/* Scene 3: stacked moment lines */
+/* Scene 3: stacked moment lines, centered horizontally with comfortable width */
 .scene-moment {
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 }
 .scene-moment .moment-stack {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 28ch;
-  margin-top: auto;
-  margin-bottom: auto;
+  max-width: 56ch;
+  width: 100%;
+  text-align: left;
 }
 .scene-moment .moment-line {
   font-size: clamp(1.6rem, 3vw, 2.4rem);
@@ -950,11 +951,7 @@ body {
   border-radius: 3px;
 }
 
-/* Scene 3: stack is a bit roomy for one line of text. Cap title size and tighten gap */
-.scene-moment .moment-stack {
-  gap: 1rem;
-  max-width: 32ch;
-}
+/* (Scene 3 audit override removed — replaced by the centered/wider rule above.) */
 
 /* Harness cards: more breathing room, balance with detail line */
 .scene-harness .harness-grid {
