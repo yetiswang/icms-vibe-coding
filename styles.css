@@ -1667,3 +1667,156 @@ body {
   font-size: 0.7rem;
   margin-top: 0.1rem;
 }
+
+/* === Touch / mobile floating nav === */
+#touch-nav {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  display: none;
+  gap: 8px;
+  z-index: 200;
+}
+#touch-nav button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(20,20,28,0.85);
+  color: rgba(255,255,255,0.85);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-family: var(--font-display);
+}
+#touch-nav button:active {
+  background: rgba(200,16,46,0.55);
+  border-color: var(--tue-red);
+}
+
+/* Show floating nav on touch / coarse pointer / narrow viewport */
+@media (hover: none) and (pointer: coarse), (max-width: 880px) {
+  #touch-nav { display: flex; }
+}
+
+/* === Mobile / narrow-viewport layout (≤ 880px wide) === */
+@media (max-width: 880px) {
+  html, body { overflow: auto; }   /* allow internal scroll on tall scenes */
+
+  .scene {
+    padding: 3vh 5vw 6vh;
+    overflow: auto;                /* scenes that overflow can scroll */
+  }
+  .scene .title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+  .scene .footer-strip {
+    font-size: 0.6rem;
+    bottom: 0.6vh;
+    letter-spacing: 1px;
+  }
+
+  /* Title-side scenes: don't push title to bottom on mobile */
+  .scene-cold-open .title { margin-top: 4vh; font-size: clamp(2rem, 8vw, 3rem); }
+  .scene-cold-open .subtitle { margin-bottom: 2vh; }
+  .scene-closing .title { margin-top: 6vh; font-size: clamp(1.8rem, 7vw, 2.6rem); }
+
+  /* Stack the multi-column grids */
+  .scene-vs .vs-split,
+  .scene-harness .harness-grid,
+  .scene-workflow .workflow-steps,
+  .scene-paths .paths-split,
+  .scene-icms-impact .impact-list {
+    grid-template-columns: 1fr !important;
+    gap: 0.7rem;
+  }
+  .scene-vs .vs-divider { display: none; }
+  .scene-workflow .workflow-arrow { display: none; }
+
+  /* Card padding: smaller */
+  .scene-harness .harness-card,
+  .scene-workflow .workflow-step,
+  .scene-paths .path-card,
+  .scene-second-brain .brain-step {
+    padding: 0.9rem;
+  }
+
+  /* Scene 4: stack columns */
+  .scene-vs .vs-tagline { font-size: 1rem; margin-top: 1rem; }
+  .scene-vs .vs-history-row { grid-template-columns: 5rem 1fr; gap: 0.5rem; font-size: 0.75rem; }
+
+  /* Scene 2 window stage: smaller, stacked windows */
+  .scene-ppt-life .window-stage { height: auto; max-width: 100%; }
+  .scene-ppt-life .mock-window {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    margin-bottom: 0.4rem;
+    left: auto !important; top: auto !important;
+  }
+  .scene-ppt-life .window-chatbot {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: 100% !important;
+    transform: none !important;
+    margin-top: 0.6rem;
+  }
+  .scene-ppt-life .mw-content { padding: 6px 10px; }
+
+  /* Task pills: tighter wrap */
+  .scene-ppt-life .task-grid { gap: 0.4rem; }
+  .scene-ppt-life .task-pill { font-size: 0.72rem; padding: 0.25rem 0.7rem; }
+
+  /* Terminal scenes (6, 9): smaller font, full width */
+  .scene-cli-1 .terminal,
+  .scene-cli-2 .terminal { max-width: 100%; }
+  .scene-cli-1 .terminal .body,
+  .scene-cli-2 .terminal .body {
+    font-size: 0.7rem;
+    line-height: 1.5;
+    min-height: 14em;
+    padding: 10px 12px;
+  }
+
+  /* Iframe scenes: shrink to viewport, taller iframes */
+  .scene-iframe .iframe-wrap { margin: 0.5rem 0; }
+
+  /* Scene 14 Obsidian: stack panes vertically, scroll if overflow */
+  .scene-second-brain .obs-mockup {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 0.5rem;
+  }
+  .scene-second-brain .obs-pane { height: 22vh; }
+  .scene-second-brain .obs-graph-svg { height: 22vh; }
+
+  /* Scene-overview grid: 2 columns on phones, 3 on tablets */
+  #scene-grid .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Help overlay: readable on phones */
+  #help-overlay table { font-size: 0.85rem; }
+  #help-overlay td { padding: 0.3rem 0.8rem 0.3rem 0; }
+}
+
+@media (min-width: 600px) and (max-width: 880px) {
+  /* Tablets: 3-col scene grid feels right */
+  #scene-grid .grid { grid-template-columns: repeat(3, 1fr); }
+  /* Restore 2-col card layouts where it fits */
+  .scene-harness .harness-grid,
+  .scene-paths .paths-split,
+  .scene-second-brain .brain-flow {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

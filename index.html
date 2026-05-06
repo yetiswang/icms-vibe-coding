@@ -590,8 +590,17 @@
       <tr><td><kbd>?</kbd></td><td>Toggle this help overlay</td></tr>
       <tr><td><kbd>Shift+Space</kbd></td><td>Skip rest of current terminal line</td></tr>
       <tr><td><kbd>F</kbd></td><td>Browser full-screen</td></tr>
+      <tr><td>Tap right / left</td><td>Advance / retreat (touch)</td></tr>
     </table>
   </div>
+
+  <!-- Floating mobile/touch nav (visible on small screens or coarse pointers) -->
+  <div id="touch-nav" aria-hidden="true">
+    <button id="touch-back" type="button" title="Back">‹</button>
+    <button id="touch-grid" type="button" title="All slides">☰</button>
+    <button id="touch-fwd" type="button" title="Forward">›</button>
+  </div>
+
   <script src="deck.js"></script>
 </body>
 </html>
