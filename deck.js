@@ -187,6 +187,28 @@ if (touchBack) touchBack.addEventListener('click', e => { e.stopPropagation(); r
 if (touchFwd)  touchFwd .addEventListener('click', e => { e.stopPropagation(); advance(); });
 if (touchGrid) touchGrid.addEventListener('click', e => { e.stopPropagation(); toggleSceneGrid(); });
 
+// === Theme toggle (light / dark) ===
+const themeToggle = document.getElementById('theme-toggle');
+function applyStoredTheme() {
+  const stored = localStorage.getItem('deck-theme');
+  if (stored === 'light') document.documentElement.dataset.theme = 'light';
+  else delete document.documentElement.dataset.theme;
+}
+applyStoredTheme();
+if (themeToggle) {
+  themeToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const isLight = document.documentElement.dataset.theme === 'light';
+    if (isLight) {
+      delete document.documentElement.dataset.theme;
+      localStorage.setItem('deck-theme', 'dark');
+    } else {
+      document.documentElement.dataset.theme = 'light';
+      localStorage.setItem('deck-theme', 'light');
+    }
+  });
+}
+
 // Tap-anywhere advancement (touch / mouse). Skips iframes and interactive UI.
 document.addEventListener('click', e => {
   if (sceneGrid.hidden === false || helpOverlay.hidden === false) return;

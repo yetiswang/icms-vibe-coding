@@ -1820,3 +1820,253 @@ body {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+
+/* === Theme tokens (dark default, light override) === */
+:root {
+  --theme-bg: #1E1E28;
+  --theme-text: white;
+  --theme-text-secondary: rgba(255,255,255,0.85);
+  --theme-text-muted: rgba(255,255,255,0.55);
+  --theme-text-subtle: rgba(255,255,255,0.4);
+  --theme-card-bg: rgba(255,255,255,0.07);
+  --theme-card-border: rgba(255,255,255,0.08);
+  --theme-rule: rgba(255,255,255,0.18);
+  --theme-atmosphere:
+    radial-gradient(ellipse at 80% 20%, rgba(200,16,46,0.18), transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(58,24,32,0.45), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(30,30,40,0.0), rgba(20,20,28,0.6) 70%);
+}
+[data-theme="light"] {
+  --theme-bg: #FAF7F2;
+  --theme-text: #1E1E28;
+  --theme-text-secondary: rgba(30,30,40,0.8);
+  --theme-text-muted: rgba(30,30,40,0.55);
+  --theme-text-subtle: rgba(30,30,40,0.4);
+  --theme-card-bg: rgba(255,255,255,0.85);
+  --theme-card-border: rgba(30,30,40,0.08);
+  --theme-rule: rgba(30,30,40,0.12);
+  --theme-atmosphere:
+    radial-gradient(ellipse at 80% 20%, rgba(200,16,46,0.08), transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(232,222,210,0.55), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.0), rgba(245,238,228,0.55) 70%);
+}
+
+/* Wire body background + text to tokens; smooth transition */
+html, body {
+  background: var(--theme-atmosphere), var(--theme-bg);
+  color: var(--theme-text);
+  transition: background 600ms ease, color 600ms ease;
+}
+
+/* === Theme toggle button (top-right) === */
+#theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--theme-card-border);
+  background: var(--theme-card-bg);
+  color: var(--theme-text);
+  cursor: pointer;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 200ms ease, transform 200ms ease, border-color 200ms ease, color 200ms ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+#theme-toggle:hover {
+  background: var(--tue-red);
+  border-color: var(--tue-red);
+  color: white;
+  transform: scale(1.06) rotate(8deg);
+}
+#theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: opacity 300ms ease, transform 400ms ease;
+}
+#theme-toggle .icon-sun { display: none; }
+[data-theme="light"] #theme-toggle .icon-moon { display: none; }
+[data-theme="light"] #theme-toggle .icon-sun { display: block; }
+
+/* === Light mode overrides === */
+[data-theme="light"] .scene .caption { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .scene .caption.muted { color: rgba(30,30,40,0.55); }
+[data-theme="light"] .scene .footer-strip { color: rgba(30,30,40,0.45); }
+[data-theme="light"] .scene .subtitle { color: rgba(30,30,40,0.7); }
+[data-theme="light"] .scene .title { color: #1E1E28; }
+
+/* Eyebrow stays red — already brand color */
+
+/* Cards across all card-heavy scenes pick up a soft white surface */
+[data-theme="light"] .scene-harness .harness-card,
+[data-theme="light"] .scene-workflow .workflow-step,
+[data-theme="light"] .scene-paths .path-card,
+[data-theme="light"] .scene-second-brain .brain-step {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(30,30,40,0.08);
+  box-shadow: 0 4px 16px rgba(30,30,40,0.06);
+}
+
+[data-theme="light"] .harness-name,
+[data-theme="light"] .workflow-name,
+[data-theme="light"] .brain-step-name { color: #1E1E28; }
+
+[data-theme="light"] .harness-desc,
+[data-theme="light"] .workflow-desc,
+[data-theme="light"] .brain-step-desc { color: rgba(30,30,40,0.78); }
+
+[data-theme="light"] .harness-detail,
+[data-theme="light"] .workflow-detail {
+  color: rgba(30,30,40,0.55);
+  border-top-color: rgba(30,30,40,0.1);
+}
+
+[data-theme="light"] .path-name { color: #1E1E28; }
+[data-theme="light"] .path-list li { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .path-cost { color: #1E1E28; }
+[data-theme="light"] .path-note { color: rgba(30,30,40,0.6); }
+
+/* Scene 2 windows: cream paper, shadow */
+[data-theme="light"] .scene-ppt-life .mock-window {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(30,30,40,0.12);
+  box-shadow: 0 12px 32px rgba(30,30,40,0.18), 0 0 0 1px rgba(30,30,40,0.04);
+}
+[data-theme="light"] .scene-ppt-life .mw-titlebar {
+  background: linear-gradient(to bottom, #ECECEF, #DCDCE0);
+}
+[data-theme="light"] .scene-ppt-life .mw-tab { color: rgba(30,30,40,0.6); }
+[data-theme="light"] .scene-ppt-life .mw-line { background: rgba(30,30,40,0.15); }
+[data-theme="light"] .scene-ppt-life .ppt-thumb {
+  background: linear-gradient(135deg, #f0f0f3, #e6e6ea);
+  border-color: rgba(30,30,40,0.1);
+}
+[data-theme="light"] .scene-ppt-life .ppt-thumb::before { background: rgba(30,30,40,0.2); }
+[data-theme="light"] .scene-ppt-life .ppt-thumb::after { background: rgba(30,30,40,0.08); }
+[data-theme="light"] .scene-ppt-life .task-pill {
+  background: rgba(200,16,46,0.06);
+  border-color: rgba(200,16,46,0.2);
+  color: rgba(30,30,40,0.85);
+}
+[data-theme="light"] .scene-ppt-life .window-chatbot {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(95,182,255,0.5);
+}
+[data-theme="light"] .scene-ppt-life .chat-bubble {
+  background: rgba(95,182,255,0.18);
+  color: rgba(30,30,40,0.9);
+}
+[data-theme="light"] .scene-ppt-life .chat-typing {
+  background: rgba(30,30,40,0.06);
+}
+[data-theme="light"] .scene-ppt-life .chat-typing i { background: rgba(30,30,40,0.5); }
+
+/* Scene 4: chatbot vs Claude split */
+[data-theme="light"] .scene-vs .vs-setup,
+[data-theme="light"] .scene-vs .vs-tagline { color: rgba(30,30,40,0.78); }
+[data-theme="light"] .scene-vs .vs-line { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .scene-vs .vs-label { color: rgba(30,30,40,0.55); }
+[data-theme="light"] .scene-vs .hero-bg {
+  background:
+    linear-gradient(120deg, rgba(250,247,242,0.95) 0%, rgba(250,247,242,0.7) 50%, rgba(200,16,46,0.10) 100%),
+    radial-gradient(circle at 75% 30%, rgba(200,16,46,0.16), transparent 55%);
+}
+[data-theme="light"] .scene-vs .vs-history-text { color: rgba(30,30,40,0.78); }
+
+/* Scene 14: Obsidian panes — flip to cream paper */
+[data-theme="light"] .scene-second-brain .obs-pane {
+  background: rgba(255,255,255,0.92);
+  border-color: rgba(30,30,40,0.1);
+  color: rgba(30,30,40,0.85);
+}
+[data-theme="light"] .scene-second-brain .obs-pane-title {
+  background: rgba(200,16,46,0.06);
+  border-bottom-color: rgba(200,16,46,0.18);
+}
+[data-theme="light"] .scene-second-brain .obs-folder { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .scene-second-brain .obs-file { color: rgba(30,30,40,0.55); }
+[data-theme="light"] .scene-second-brain .obs-file.open {
+  color: #1E1E28;
+  background: rgba(200,16,46,0.1);
+}
+[data-theme="light"] .scene-second-brain .obs-h1 { color: #1E1E28; }
+[data-theme="light"] .scene-second-brain .obs-note-body { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .scene-second-brain .obs-tags { color: rgba(30,30,40,0.5); }
+[data-theme="light"] .obs-edge.faint { stroke: rgba(30,30,40,0.22); }
+[data-theme="light"] .obs-node {
+  fill: rgba(30,30,40,0.55);
+  stroke: rgba(30,30,40,0.7);
+}
+[data-theme="light"] .obs-node.tiny {
+  fill: rgba(30,30,40,0.5);
+  stroke: rgba(30,30,40,0.6);
+}
+[data-theme="light"] .obs-node-label { fill: #1E1E28; }
+[data-theme="light"] .obs-node-label-sm { fill: rgba(30,30,40,0.6); }
+
+/* Scene 16 impact list */
+[data-theme="light"] .scene-icms-impact .impact-headline { color: #1E1E28; }
+[data-theme="light"] .scene-icms-impact .impact-sub { color: rgba(30,30,40,0.6); }
+
+/* Scene 17 invite */
+[data-theme="light"] .scene-invite .invite-sub { color: rgba(30,30,40,0.65); }
+
+/* Scene 18 closing */
+[data-theme="light"] .scene-closing .closing-credit { color: rgba(30,30,40,0.85); }
+[data-theme="light"] .scene-closing .closing-source { color: rgba(30,30,40,0.55); }
+[data-theme="light"] .scene-closing .closing-stack { color: rgba(30,30,40,0.45); }
+
+/* Cold-open and closing hero images: tone down in light mode */
+[data-theme="light"] .scene-cold-open .hero-bg { opacity: 0.18; filter: contrast(0.9) saturate(0.95); }
+[data-theme="light"] .scene-closing .hero-bg { opacity: 0.12; }
+
+/* Scene grid + help overlay */
+[data-theme="light"] #scene-grid,
+[data-theme="light"] #help-overlay {
+  background: rgba(250,247,242,0.97);
+  color: #1E1E28;
+}
+[data-theme="light"] #scene-grid .tile {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(30,30,40,0.1);
+  color: #1E1E28;
+}
+[data-theme="light"] #scene-grid .tile:hover {
+  background: rgba(200,16,46,0.1);
+  border-color: var(--tue-red);
+}
+[data-theme="light"] #help-overlay kbd {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(30,30,40,0.15);
+  color: #1E1E28;
+}
+
+/* Touch nav buttons in light mode */
+[data-theme="light"] #touch-nav button {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(30,30,40,0.12);
+  color: #1E1E28;
+  box-shadow: 0 4px 16px rgba(30,30,40,0.18);
+}
+
+/* Workflow arrows: keep red regardless */
+
+/* Terminals stay dark always — they look correct that way. No light overrides. */
+
+/* Make atmospheric body background animate smoothly between modes */
+body {
+  transition: background 600ms ease, color 600ms ease;
+}
+
+/* Move touch-nav up so it doesn't collide with theme toggle on tiny screens */
+@media (max-width: 600px) {
+  #theme-toggle { top: 10px; right: 10px; width: 40px; height: 40px; }
+  #theme-toggle svg { width: 18px; height: 18px; }
+}
